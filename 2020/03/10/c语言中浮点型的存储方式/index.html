@@ -20,27 +20,34 @@
     var CONFIG = {"hostname":"zhaohehe.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="zhaohehe">
-<meta property="og:url" content="https://zhaohehe.github.io/index.html">
+  <meta name="description" content="在计算机中，所有数据都是以二进制的形式保存的，浮点数也不例外。">
+<meta name="keywords" content="浮点数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c语言中浮点型的存储方式">
+<meta property="og:url" content="https://zhaohehe.github.io/2020/03/10/c语言中浮点型的存储方式/index.html">
 <meta property="og:site_name" content="zhaohehe">
+<meta property="og:description" content="在计算机中，所有数据都是以二进制的形式保存的，浮点数也不例外。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://zhaohehe.github.io/images/float_mem.png">
+<meta property="og:updated_time" content="2020-03-11T14:36:26.869Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="zhaohehe">
+<meta name="twitter:title" content="c语言中浮点型的存储方式">
+<meta name="twitter:description" content="在计算机中，所有数据都是以二进制的形式保存的，浮点数也不例外。">
+<meta name="twitter:image" content="https://zhaohehe.github.io/images/float_mem.png">
 
-<link rel="canonical" href="https://zhaohehe.github.io/">
+<link rel="canonical" href="https://zhaohehe.github.io/2020/03/10/c语言中浮点型的存储方式/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false
+    isHome : false,
+    isPost : true
   };
 </script>
 
-  <title>zhaohehe</title>
+  <title>c语言中浮点型的存储方式 | zhaohehe</title>
   
 
 
@@ -145,10 +152,10 @@
             
 
   <div class="posts-expand">
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://zhaohehe.github.io/2020/03/10/c语言中浮点型的存储方式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -162,8 +169,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/10/c语言中浮点型的存储方式/" class="post-title-link" itemprop="url">c语言中浮点型的存储方式</a>
+          c语言中浮点型的存储方式
         </h1>
 
         <div class="post-meta">
@@ -188,35 +194,65 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <blockquote>
+        <blockquote>
 <p>在计算机中，所有数据都是以二进制的形式保存的，浮点数也不例外。</p>
 </blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/10/c语言中浮点型的存储方式/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+<a id="more"></a>
+<h2 id="保存的过程"><a href="#保存的过程" class="headerlink" title="保存的过程"></a>保存的过程</h2><p>1.先将浮点数转化为二进制数据。<br>2.将二进制形式转换成二进制的指数形式。<br>3.将指数形式的各部分分别保存到内存约定的位置上。</p>
+<h2 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h2><p>在c语言中，float类型一般占32位。IEEE754标准单精度浮点型格式，在内存中的结构如下：</p>
+<p><img src="/images/float_mem.png" alt></p>
+<p>float所占据的32位被分成了三个部分，符号(sign)，指数(exponent)，小数(fraction)。</p>
+<ul>
+<li>符号位: 只占一个最高位，0表示正，1表示负数。</li>
+<li>指数部分: 占8位，可以表示[0, 255]范围内的数字，由于指数部分可能是负数，所以约定exponent=c-127,(c为指数部分在内存中的实际值)，这样exponent的范围就是[-127, 128]。</li>
+<li>小数部分: 因为在把浮点数转换成二进制指数的时候，总是保证 1 ≤ fraction &lt; 2, 这样的话，小数点前的数字永远是1，就不用存了，内存中只保存小数点后的数字，称之为尾数(m)。</li>
+</ul>
+<p>计算一个浮点数实际值的公式为:</p>
+<p>$$<br>value = (-1)^{sign} × fraction × 2^{exponent}<br>$$</p>
+<p>$$<br>with : exponent = c - 127;    fraction = 1 + m<br>$$</p>
+<h2 id="一个具体🌰"><a href="#一个具体🌰" class="headerlink" title="一个具体🌰"></a>一个具体🌰</h2><p>以浮点数<code>3.4</code>为例，来探究其在内存中实际是如何存储的。</p>
+<h3 id="第一步：转换成二进制形式"><a href="#第一步：转换成二进制形式" class="headerlink" title="第一步：转换成二进制形式"></a>第一步：转换成二进制形式</h3><p>10进制的小数转换成二进制与整数的转换是不同的，可以采用乘2取整法。</p>
+<blockquote>
+<p>乘2取整法，即将小数部分乘以2，然后取整数部分，剩下的小数部分继续乘以2，然后取整数部分，剩下的小数部分又乘以2，一直取到小数部分为零为止。</p>
+</blockquote>
+<ol>
+<li><code>3.4</code>的整数部分为3，转换成二进制还是11。重点是小数部分也就是<code>0.4</code>如何转换成二进制。</li>
+<li><code>0.4</code> × 2 = 0.8。整数部分为0, 小数部分为0.8。</li>
+<li><code>0.8</code> × 2 = 1.6。整数部分为1, 小数部分为0.6。</li>
+<li><code>0.6</code> × 2 = 1.2。整数部分为1, 小数部分为0.2。</li>
+<li><code>0.2</code> × 2 = 0.4。整数部分为0, 小数部分为0.4。<br>…</li>
+</ol>
+<p>不难发现，小数部分应用不可能为0，这就变成了死循环，实际这个过程计算到小数点后一定的位数就停止了，最后取一个近似值。最终得到的二进制小数形式为: <code>11.0110</code>。</p>
+<h3 id="第二步：转换成二进制指数"><a href="#第二步：转换成二进制指数" class="headerlink" title="第二步：转换成二进制指数"></a>第二步：转换成二进制指数</h3><p>这一步比较简单，<code>11.0110</code>转换成二进制就是 1.10110 × 2 ^ 1。</p>
+<h3 id="第三部：存储到内存"><a href="#第三部：存储到内存" class="headerlink" title="第三部：存储到内存"></a>第三部：存储到内存</h3><p>套用上面的公式，sign = 0, fraction = 1.10110…, exponent = 1。<br>进而计算出c = 128, m = 0.10110…。内存中只保存小数点后的数字，即10110…。<br>可以得到浮点数1.4在内存中的每一位就是: <code>0  10000000   10110..........</code></p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>通过下面的一段c代码，验证浮点数<code>3.4</code>在内存中的存储是否符合上面的计算。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">float</span> num = <span class="number">3.4</span>;</span><br><span class="line">    <span class="keyword">int</span> int_num = *(<span class="keyword">int</span> *)&amp;num;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">31</span>; i &gt;= <span class="number">0</span>; i--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (int_num &amp; (<span class="number">1</span> &lt;&lt; i)) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"1"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="built_in">printf</span>(<span class="string">"0"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;   </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 最终输出结果为 01000000010110011001100110011010</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>浮点数在c语言中也是以二进制保存在内存中的，由于浮点数一般只占32位或64位空间，所以并不能精确地表示所有10进制小数，也就是存在精度的损失。double float 由于小数部分和指数部分占用的空间都比float多，所以精度更高。</p>
+<p>计算机在保存浮点数的时候，精度丢失实际是发生在将浮点数转成二进制小数的过程中，最后一位小数不是0或5的浮点数，采用乘2取整法的时候，循环永远无法结束，只能取一个近似值(0舍1入)。</p>
+<p>对于一些精度要求极高的程序，使用c语言的浮点类型是不合适的，这时候需要一些专门用于高精度计算的包，各个语言也有各自的实现方式。但是使用这些包的情况下，总是不可避免地带来计算效率上的损失。看你如何在时间与精度之间取舍了。</p>
+
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+          <div class="post-tags">
+              <a href="/tags/浮点数/" rel="tag"># 浮点数</a>
+          </div>
+
+        
+
+
+        
       </footer>
+    
   </article>
   
   
   
 
   </div>
-
-  
-
 
 
           </div>
@@ -267,6 +303,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#保存的过程"><span class="nav-number">1.</span> <span class="nav-text">保存的过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存结构"><span class="nav-number">2.</span> <span class="nav-text">内存结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个具体🌰"><span class="nav-number">3.</span> <span class="nav-text">一个具体🌰</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步：转换成二进制形式"><span class="nav-number">3.1.</span> <span class="nav-text">第一步：转换成二进制形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步：转换成二进制指数"><span class="nav-number">3.2.</span> <span class="nav-text">第二步：转换成二进制指数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三部：存储到内存"><span class="nav-number">3.3.</span> <span class="nav-text">第三部：存储到内存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证"><span class="nav-number">4.</span> <span class="nav-text">验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
