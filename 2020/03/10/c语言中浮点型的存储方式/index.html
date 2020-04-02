@@ -29,7 +29,7 @@
 <meta property="og:description" content="在计算机中，所有数据都是以二进制的形式保存的，浮点数也不例外。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://zhaohehe.github.io/images/float_mem.png">
-<meta property="og:updated_time" content="2020-03-11T14:36:26.869Z">
+<meta property="og:updated_time" content="2020-04-02T15:18:01.095Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="c语言中浮点型的存储方式">
 <meta name="twitter:description" content="在计算机中，所有数据都是以二进制的形式保存的，浮点数也不例外。">
@@ -178,10 +178,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-03-11 00:00:00 / 修改时间：22:36:26" itemprop="dateCreated datePublished" datetime="2020-03-11T00:00:00+08:00">2020-03-11</time>
+              <time title="创建时间：2020-03-11 00:00:00" itemprop="dateCreated datePublished" datetime="2020-03-11T00:00:00+08:00">2020-03-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-02 23:18:01" itemprop="dateModified" datetime="2020-04-02T23:18:01+08:00">2020-04-02</time>
+              </span>
 
           
 
@@ -227,7 +233,7 @@
 <h3 id="第三部：存储到内存"><a href="#第三部：存储到内存" class="headerlink" title="第三部：存储到内存"></a>第三部：存储到内存</h3><p>套用上面的公式，sign = 0, fraction = 1.10110…, exponent = 1。<br>进而计算出c = 128, m = 0.10110…。内存中只保存小数点后的数字，即10110…。<br>可以得到浮点数1.4在内存中的每一位就是: <code>0  10000000   10110..........</code></p>
 <h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>通过下面的一段c代码，验证浮点数<code>3.4</code>在内存中的存储是否符合上面的计算。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">float</span> num = <span class="number">3.4</span>;</span><br><span class="line">    <span class="keyword">int</span> int_num = *(<span class="keyword">int</span> *)&amp;num;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">31</span>; i &gt;= <span class="number">0</span>; i--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (int_num &amp; (<span class="number">1</span> &lt;&lt; i)) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"1"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="built_in">printf</span>(<span class="string">"0"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;   </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 最终输出结果为 01000000010110011001100110011010</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>浮点数在c语言中也是以二进制保存在内存中的，由于浮点数一般只占32位或64位空间，所以并不能精确地表示所有10进制小数，也就是存在精度的损失。double float 由于小数部分和指数部分占用的空间都比float多，所以精度更高。</p>
-<p>计算机在保存浮点数的时候，精度丢失实际是发生在将浮点数转成二进制小数的过程中，最后一位小数不是0或5的浮点数，采用乘2取整法的时候，循环永远无法结束，只能取一个近似值(0舍1入)。</p>
+<p>计算机在保存浮点数的时候，精度丢失实际是发生在将浮点数转成二进制小数的过程中，最后一位小数不是0或5的浮点数，采用乘2取整法的时候，循环永远无法结束，只能取一个近似值(0舍1入)。也就是说，二进制小数与十进制小数互转的时候，有限位内无法完全对应。</p>
 <p>对于一些精度要求极高的程序，使用c语言的浮点类型是不合适的，这时候需要一些专门用于高精度计算的包，各个语言也有各自的实现方式。但是使用这些包的情况下，总是不可避免地带来计算效率上的损失。看你如何在时间与精度之间取舍了。</p>
 
     </div>
@@ -245,6 +251,13 @@
 
 
         
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/01/php中获取中文字符串的长度/" rel="next" title="php中获取中文字符串的长度">
+      php中获取中文字符串的长度 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
     
   </article>
@@ -319,14 +332,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
