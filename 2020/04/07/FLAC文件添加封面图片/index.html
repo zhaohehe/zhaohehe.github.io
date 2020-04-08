@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhaohehe.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="FLAC是一套著名的自由音频压缩编码，其特点是无损压缩。在播放一个FLAC格式的音乐的时候，发现没有封面，于是就比较好奇FLAC是怎么保存音乐的图片信息的，以及怎么样添加或替换一个FLAC文件的图片。">
+<meta name="keywords" content="FLAC,音乐,字节序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FLAC文件添加封面图片">
+<meta property="og:url" content="https://zhaohehe.github.io/2020/04/07/FLAC文件添加封面图片/index.html">
+<meta property="og:site_name" content="zhaohehe">
+<meta property="og:description" content="FLAC是一套著名的自由音频压缩编码，其特点是无损压缩。在播放一个FLAC格式的音乐的时候，发现没有封面，于是就比较好奇FLAC是怎么保存音乐的图片信息的，以及怎么样添加或替换一个FLAC文件的图片。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-08T15:08:32.642Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FLAC文件添加封面图片">
+<meta name="twitter:description" content="FLAC是一套著名的自由音频压缩编码，其特点是无损压缩。在播放一个FLAC格式的音乐的时候，发现没有封面，于是就比较好奇FLAC是怎么保存音乐的图片信息的，以及怎么样添加或替换一个FLAC文件的图片。">
+
+<link rel="canonical" href="https://zhaohehe.github.io/2020/04/07/FLAC文件添加封面图片/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>FLAC文件添加封面图片 | zhaohehe</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhaohehe</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhaohehe.github.io/2020/04/07/FLAC文件添加封面图片/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/11255525?s=400&u=241e3f76cb159cb18991fc85e9aa74517c682260&v=4#/images/avatar.gif">
+      <meta itemprop="name" content="zhaohehe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhaohehe">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FLAC文件添加封面图片
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-08 00:00:00 / 修改时间：23:08:32" itemprop="dateCreated datePublished" datetime="2020-04-08T00:00:00+08:00">2020-04-08</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>FLAC是一套著名的自由音频压缩编码，其特点是无损压缩。<br>在播放一个FLAC格式的音乐的时候，发现没有封面，于是就比较好奇FLAC是怎么保存音乐的图片信息的，以及怎么样添加或替换一个FLAC文件的图片。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="FLAC文件格式"><a href="#FLAC文件格式" class="headerlink" title="FLAC文件格式"></a>FLAC文件格式</h2><p>FLAC文件格式大体上可以分为三个部分：</p>
+<table>
+<thead>
+<tr>
+<th>结构</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>flac标志</td>
+<td>4byte 字符”<code>fLaC</code>“, 用于识别flac数据流</td>
+</tr>
+<tr>
+<td>METADATA_BLOCK</td>
+<td>一个以上的描述信息块</td>
+</tr>
+<tr>
+<td>FRAME</td>
+<td>一个以上的音频帧</td>
+</tr>
+</tbody>
+</table>
+<p>其中，文件的头4个字符固定为”fLaC”，用于识别falc数据流，而我所关心的图片信息就保存在METADATA_BLOCK结构中。</p>
+<p>METADATA_BLOCK结构可以分为两个部分，固定长度的METADATA_BLOCK_HEADER和不固定长度的METADATA_BLOCK_DATA。</p>
+<p><code>METADATA_BLOCK_HEADER</code>结构如下:</p>
+<table>
+<thead>
+<tr>
+<th>长度（位）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>该位为1，表示当前METADATA_BLOCK是最后一个</td>
+</tr>
+<tr>
+<td>7</td>
+<td>BLOCK_TYPE <br>0 : STREAMINFO <br>1 : PADDING<br>2 : APPLICATION<br>3 : SEEKTABLE<br>4 :VORBIS_COMMENT<br>5 : CUESHEET<br>6 : PICTURE<br>7-126 : 保留值<br>127 : 无效</td>
+</tr>
+<tr>
+<td>24</td>
+<td>METADATA_BLOCK_HEADER后面跟着的METADATA_BLOCK_DATA的长度</td>
+</tr>
+</tbody>
+</table>
+<p>之所以METADATA_BLOCK有一个或多个，是因为一个FLAC文件必须存在一个BLOCK_TYPE=STREAMINFO的描述信息块。包含了FLAC格式必须的一些信息，比如采样率、声道数等。</p>
+<p>每个描述信息块的长度都不一样，这是因为每种类型的描述信息本身的结构都各不相同。以PICTURE类型为例，它的METADATA_BLOCK_DATA部分的结构如下：</p>
+<table>
+<thead>
+<tr>
+<th>长度（位）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>32</td>
+<td>图片类型</td>
+</tr>
+<tr>
+<td>32</td>
+<td>MIME类型字符长度（byte）</td>
+</tr>
+<tr>
+<td>n*8</td>
+<td>MIME类型</td>
+</tr>
+<tr>
+<td>32</td>
+<td>描述符长度（byte）</td>
+</tr>
+<tr>
+<td>n*8</td>
+<td>描述符</td>
+</tr>
+<tr>
+<td>32</td>
+<td>图片宽度</td>
+</tr>
+<tr>
+<td>32</td>
+<td>图片高度</td>
+</tr>
+<tr>
+<td>32</td>
+<td>图片颜色深度</td>
+</tr>
+<tr>
+<td>32</td>
+<td>索引图使用的颜色数目，0非索引图</td>
+</tr>
+<tr>
+<td>32</td>
+<td>图片数据长度</td>
+</tr>
+<tr>
+<td>n*8</td>
+<td>图片数据</td>
+</tr>
+</tbody>
+</table>
+<h2 id="解析FLAC文件"><a href="#解析FLAC文件" class="headerlink" title="解析FLAC文件"></a>解析FLAC文件</h2><p>通过上面的描述，发现flac文件格式很有规律，在c语言中，可以很方便地使用结构体来表示flac格式的一些结构。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * METADATA_BLOCK_HEADER</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">flac_meta_block_header</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> is_final   : <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> block_type : <span class="number">7</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> block_size : <span class="number">24</span>;</span><br><span class="line">&#125; flac_meta_block_header;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  METADATA_BLOCK_PICTURE</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">flac_meta_block_picture</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> picture_type;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> mime_length;</span><br><span class="line">    <span class="keyword">char</span> *mime;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> description_length;</span><br><span class="line">    <span class="keyword">char</span> *description;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> width;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> height;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> color_depth;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> index_color_count;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> image_data_length;</span><br><span class="line">    <span class="keyword">char</span> *image_data;</span><br><span class="line">&#125; flac_meta_block_picture;</span><br></pre></td></tr></table></figure></p>
+<p>通过<code>fread()</code>函数，按照flac文件格式往后遍历，可以把全部的METADATA_BLOCK结构组成一个flac_meta_block_header[]数组，is_final字段作为遍历终止条件。</p>
+<p>检查flac_meta_block_header[]数组中有没有block_type=6的元素，就可以得知这个文件中有没有包含图片信息了。更近一步，可以获取图片的各种信息，包含尺寸、描述等，也包括图片内容本身。</p>
+<h2 id="插入图片信息"><a href="#插入图片信息" class="headerlink" title="插入图片信息"></a>插入图片信息</h2><p>插入图片信息之前，先要把图片组装成一个METADATA_BLOCK_PICTURE格式的结构，然后在前面加上METADATA_BLOCK_HEADER，头的类型为PICTURE，长度为METADATA_BLOCK_PICTURE的长度。这就组成了一个图片类型的METADATA_BLOCK描述信息块。</p>
+<p>在解析FLAC的时候可以记录下METADATA_BLOCK部分结束位置的文件偏移量。然后在此处插入新加的图片的METADATA_BLOCK。需要注意处理一下METADATA_BLOCK_HEADER的is_final位，保证只有最后一个描述信息块的is_final=1。</p>
+<h2 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a>字节序</h2><p>FLAC文件格式中的所有数值都是整形，大端(big-endian)模式。而一般的x86系列CPU都是小端(little-endian)的字节序。这样在写入数值到FLAC文件中的时候就要注意了。</p>
+<p>以METADATA_BLOCK_PICTURE的image_data_length字段为例，当我想写入的数值为19088743的时候，如果直接<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> length = <span class="number">240</span>;</span><br><span class="line">fwrite(&amp;length, <span class="keyword">sizeof</span>(<span class="keyword">int</span>), <span class="number">1</span>, fp);</span><br></pre></td></tr></table></figure></p>
+<p>写入的会是什么呢？<br>19088743的16进制形式为: 0x01234567，假设length变量的地址为0x10000，那么length在内存中的情况:</p>
+<table>
+<thead>
+<tr>
+<th>地址</th>
+<th>0x10000</th>
+<th>0x10001</th>
+<th>0x10002</th>
+<th>0x10003</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>大端法的值</td>
+<td>0x01</td>
+<td>0x23</td>
+<td>0x45</td>
+<td>0x67</td>
+</tr>
+<tr>
+<td>小端法的值</td>
+<td>0x67</td>
+<td>0x45</td>
+<td>0x23</td>
+<td>0x01</td>
+</tr>
+</tbody>
+</table>
+<p>在我的计算机中，数值是以小端法在内存中存储的，上面的代码写入到文件中的值也是|0x67|0x45|0x23|0x01|的顺序，当读取FLAC文件的时候，由于我们已知其是大端格式，在将length解释为一个int值的时候就会出问题。</p>
+<p>所以在写文件的时候，写入到文件中的字节序要与内存中的顺序相反，一个简单的办法就是通过运算按照从高有效字节到低有效字节的顺序把32位int转换成一个char[]数组，这样内存中各个字节的排列顺序就变成大端的形式了:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FILE* <span class="title">write_int_32</span><span class="params">(FILE *fp, <span class="keyword">unsigned</span> <span class="keyword">int</span> number)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> char_array[<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line">    char_array[<span class="number">0</span>] = number &gt;&gt; <span class="number">24</span>;</span><br><span class="line">    char_array[<span class="number">1</span>] = number &lt;&lt; <span class="number">8</span> &gt;&gt; <span class="number">24</span>;</span><br><span class="line">    char_array[<span class="number">2</span>] = number &lt;&lt; <span class="number">16</span> &gt;&gt; <span class="number">24</span>;</span><br><span class="line">    char_array[<span class="number">3</span>] = number &lt;&lt; <span class="number">24</span> &gt;&gt; <span class="number">24</span>;</span><br><span class="line"></span><br><span class="line">    fwrite(char_array, <span class="number">1</span>, <span class="number">4</span>, fp);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> fp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>FLAC文件格式将各种描述信息按顺序写入到METADATA_BLOCK结构中，至少有一个STREAMINFO类型的描述信息块来存储一些必需的信息，is_final位表示METADATA_BLOCK的结束。FLAC格式中的的数值都是整数，且采用大端字节序。在读取和写入数值的时候需要注意。</li>
+<li>在网络通信时，也会遇到不同主机之间字节序不同的问题，因此TCP/IP协议规定了网络通信统一采用网络字节序（大端字节序）。</li>
+</ol>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://github.com/zhaohehe/flac-parser" target="_blank" rel="noopener">代码</a><br><a href="https://xiph.org/flac/format.html#metadata_block_picture" target="_blank" rel="noopener">flac格式</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FLAC/" rel="tag"># FLAC</a>
+              <a href="/tags/音乐/" rel="tag"># 音乐</a>
+              <a href="/tags/字节序/" rel="tag"># 字节序</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/01/php中获取中文字符串的长度/" rel="prev" title="php中获取中文字符串的长度">
+      <i class="fa fa-chevron-left"></i> php中获取中文字符串的长度
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FLAC文件格式"><span class="nav-number">1.</span> <span class="nav-text">FLAC文件格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解析FLAC文件"><span class="nav-number">2.</span> <span class="nav-text">解析FLAC文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入图片信息"><span class="nav-number">3.</span> <span class="nav-text">插入图片信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字节序"><span class="nav-number">4.</span> <span class="nav-text">字节序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zhaohehe"
+      src="https://avatars1.githubusercontent.com/u/11255525?s=400&u=241e3f76cb159cb18991fc85e9aa74517c682260&v=4#/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">zhaohehe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhaohehe" title="GitHub → https://github.com/zhaohehe" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhaohehe</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
