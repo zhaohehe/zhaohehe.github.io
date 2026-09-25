@@ -49,4 +49,6 @@ Two kinds of sea in one day. Woljeongri's is blue in layers, stacked one upon an
 
 By the drive home it was dark, and there was nothing outside the window but streetlights and your own reflection.
 
+The same photographs are collected in [a gallery](/en/gallery/jeju-20260916/), if you would rather page through them.
+
 > Shot on a Sony A7C with the FE 24-105mm F4 G, handheld throughout. The photographs were resized for the web and not colour-graded.

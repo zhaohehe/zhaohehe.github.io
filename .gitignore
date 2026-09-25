@@ -12,6 +12,10 @@ themes/
 # 图片上传配置（含 R2 密钥路径等本机信息）
 .photo-env
 
+# 本地备忘：账户 ID、bucket 名、真实地址等，不进仓库
+LOCAL-NOTES.md
+*.local.md
+
 # 待上传的原图，不进仓库
 photos-inbox/
 

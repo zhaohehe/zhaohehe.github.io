@@ -121,6 +121,9 @@ photos:
    - **没有域名**：用 *Public Development URL*，会给你一个 `https://pub-xxxx.r2.dev` 地址。
      注意它带速率限制，是给开发调试用的，长期用建议还是绑域名。
 
+   > 你的真实地址、账户 ID、bucket 名都记在本机的 `LOCAL-NOTES.md` 里，
+   > 那个文件已被忽略，不会进仓库。
+
 4. **装工具并配置 rclone**：
 
    ```bash
@@ -242,6 +245,4 @@ photos-inbox/       待上传的原图，不进仓库
 
 - GitHub Pages 单站点上限 1 GB、每月约 100 GB 流量。照片放 R2 就是为了绕开这条。
 - **不要用 Git LFS 存图片**，GitHub Pages 不支持，图片会挂掉。
-- `content/gallery/example-album/`、`content/posts/photo-demo/` 和它们旁边的
-  `sample.jpg` 都是演示用的，看完可以直接删。
 - 上传完记得清理 `photos-inbox/` 里的原图，那里不进仓库但会占本地硬盘。
