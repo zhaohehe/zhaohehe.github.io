@@ -1,0 +1,134 @@
+{{ define "main" }}
+{{/*
+  关于页。
+
+  头像是站点级设置（hugo.toml 的 authorAvatar），姓名和简介也在那里。
+  正文来自 content/about/_index.<语言>.md。
+
+  下面这些板块是可选的，想让它们出现，就在那篇 md 的开头写上对应的字段：
+
+    quote: "一句你想放在最前面的话"
+    skills:
+      - title: "写作"
+        desc: "记录生活里的想法。"
+    journey:
+      - year: "2024"
+        title: "开始写博客"
+        desc: "买了第一台相机。"
+
+  没写就不显示，不会像原来那样冒出主题作者的简历。
+*/}}
+<article class="about-page">
+
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="container">
+      <div class="about-hero-inner">
+        <div class="about-hero-avatar">
+          {{ with .Site.Params.authorAvatar }}
+          <img src="{{ . | relURL }}" alt="{{ $.Site.Params.author }}">
+          {{ else }}
+          <span class="about-avatar-fallback" aria-hidden="true">{{ substr ($.Site.Params.author | default "A") 0 1 }}</span>
+          {{ end }}
+        </div>
+        <div class="about-hero-text">
+          <p class="page-eyebrow">ABOUT</p>
+          <h1 class="about-title">{{ .Site.Params.author }}</h1>
+          <p class="about-subtitle">{{ .Site.Params.authorBio }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote（可选） -->
+  {{ with .Params.quote }}
+  <section class="about-quote">
+    <div class="container-narrow">
+      <blockquote class="about-quote-text">{{ . }}</blockquote>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Content -->
+  <section class="about-content">
+    {{ .Content }}
+  </section>
+
+  <!-- Skills（可选） -->
+  {{ with .Params.skills }}
+  <section class="about-skills">
+    <div class="container">
+      <div class="section-label">
+        <span class="label-line"></span>
+        <span class="label-text">{{ $.Params.skillsLabel | default "WHAT I DO" }}</span>
+        <span class="label-line"></span>
+      </div>
+      <div class="skills-grid">
+        {{ range $i, $s := . }}
+        <div class="skill-item">
+          <div class="skill-num">{{ printf "%02d" (add $i 1) }}</div>
+          <h3>{{ $s.title }}</h3>
+          <p>{{ $s.desc }}</p>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Timeline（可选） -->
+  {{ with .Params.journey }}
+  <section class="about-timeline">
+    <div class="container-narrow">
+      <div class="section-label">
+        <span class="label-line"></span>
+        <span class="label-text">{{ $.Params.journeyLabel | default "JOURNEY" }}</span>
+        <span class="label-line"></span>
+      </div>
+      <div class="timeline">
+        {{ range . }}
+        <div class="timeline-item">
+          <div class="timeline-year">{{ .year }}</div>
+          <div class="timeline-content">
+            <h3>{{ .title }}</h3>
+            <p>{{ .desc }}</p>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Contact -->
+  <section class="about-contact">
+    <div class="container-narrow">
+      <div class="contact-inner">
+        <p class="section-label-text">GET IN TOUCH</p>
+        <h2 class="contact-title">{{ T "about.contact" }}</h2>
+        <p class="contact-desc">{{ T "about.contactDesc" }}</p>
+        <div class="contact-links">
+          {{ with .Site.Params.email }}
+          <a href="mailto:{{ . }}" class="contact-link">
+            <span class="contact-label">EMAIL</span>
+            <span class="contact-value">{{ . }}</span>
+          </a>
+          {{ end }}
+          {{ with .Site.Params.instagram }}
+          <a href="{{ . }}" target="_blank" rel="noopener" class="contact-link">
+            <span class="contact-label">INSTAGRAM</span>
+            <span class="contact-value">Instagram</span>
+          </a>
+          {{ end }}
+          {{ with .Site.Params.twitter }}
+          <a href="{{ . }}" target="_blank" rel="noopener" class="contact-link">
+            <span class="contact-label">TWITTER</span>
+            <span class="contact-value">Twitter</span>
+          </a>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+</article>
+{{ end }}

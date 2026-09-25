@@ -1,0 +1,58 @@
+{{ define "main" }}
+{{ $isCat := eq .Data.Plural "categories" }}
+{{ if $isCat }}
+<section class="page-header">
+  <div class="container">
+    <p class="page-eyebrow">CATEGORIES</p>
+    <h1 class="page-title">{{ T "taxonomy.categories" }}</h1>
+    <p class="page-desc">{{ T "taxonomy.categoriesDesc" }}</p>
+    <div class="page-divider"></div>
+  </div>
+</section>
+{{ else }}
+<section class="page-header">
+  <div class="container">
+    <p class="page-eyebrow">TAGS</p>
+    <h1 class="page-title">{{ T "taxonomy.tags" }}</h1>
+    <p class="page-desc">{{ T "taxonomy.tagsDesc" }}</p>
+    <div class="page-divider"></div>
+  </div>
+</section>
+{{ end }}
+
+<section class="tags-section">
+  <div class="container">
+    <div class="tags-cloud">
+      {{ range .Data.Terms.ByCount }}
+      <a href="{{ .Page.Permalink }}" class="tag-cloud-item" style="font-size: {{ add 14 (mul .Count 2) }}px;">
+        <span class="tag-name">{{ if not $isCat }}#{{ end }}{{ .Page.Title }}</span>
+        <span class="tag-count">{{ .Count }}</span>
+      </a>
+      {{ end }}
+    </div>
+
+    <!-- All terms with posts -->
+    <div class="tags-detail-list">
+      {{ range .Data.Terms.Alphabetical }}
+      <div class="tag-detail-group">
+        <h3 class="tag-detail-title">
+          <a href="{{ .Page.Permalink }}">{{ if not $isCat }}#{{ end }}{{ .Page.Title }}</a>
+          <span class="tag-detail-count">{{ .Count }} {{ T "taxonomy.postCount" }}</span>
+        </h3>
+        <div class="tag-detail-posts">
+          {{ range first 5 .Pages }}
+          <a href="{{ .Permalink }}" class="tag-post-item">
+            <span class="tag-post-date">{{ .Date.Format "01.02" }}</span>
+            <span class="tag-post-title">{{ .Title }}</span>
+          </a>
+          {{ end }}
+          {{ if gt .Count 5 }}
+          <a href="{{ .Page.Permalink }}" class="tag-post-more">{{ T "taxonomy.viewAll" }} {{ .Count }} {{ T "taxonomy.postCount" }} →</a>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}

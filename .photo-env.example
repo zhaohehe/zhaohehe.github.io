@@ -1,0 +1,18 @@
+# 复制成 .photo-env 再按实际情况改。.photo-env 已被 .gitignore 忽略，不会进仓库。
+
+# Cloudflare R2 的 bucket 名字，例如 blog-photos
+R2_BUCKET="blog-photos"
+
+# rclone 里配置的 remote 名字，默认叫 r2
+R2_REMOTE="r2"
+
+# bucket 的公开访问前缀，结尾不要带斜杠。
+# 绑定了自己的域名就填域名，否则填 r2.dev 给的那个地址。
+R2_PUBLIC_BASE="https://img.example.com"
+
+# 上传前把长边压到多少像素。文章正文最宽约 1232px，
+# 1600 在清晰度和体积之间比较平衡。想要更清晰可以调到 2048。
+WIDTH=1600
+
+# WebP 质量，1-100。82 足够，嫌不够清晰调到 88。
+WEBP_QUALITY=82

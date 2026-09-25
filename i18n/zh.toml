@@ -1,0 +1,73 @@
+[nav]
+  search = "搜索"
+  openMenu = "打开菜单"
+  closeMenu = "关闭菜单"
+  closeSearch = "关闭搜索"
+  searchPlaceholder = "搜索文章..."
+
+[home]
+  featured = "FEATURED · 精选"
+  latest = "LATEST · 最新文章"
+  gallery = "GALLERY · 相册"
+  about = "ABOUT"
+  subscribe = "SUBSCRIBE"
+  readMore = "阅读全文 →"
+  allPosts = "查看全部文章 →"
+  enterGallery = "进入相册 →"
+  learnMore = "了解更多 →"
+  subscribeTitle = "订阅更新"
+  subscribeDesc = "第一时间收到新文章通知"
+  emailPlaceholder = "输入你的邮箱"
+  subscribeButton = "订阅"
+  subscribeThanks = "感谢订阅！"
+  aboutTitle = "关于"
+
+[stats]
+  posts = "篇文章"
+  tags = "个标签"
+  albums = "本相册"
+
+[post]
+  share = "分享"
+  tags = "标签"
+  related = "相关文章"
+  commentsHint = "评论功能即将上线"
+  photoCount = "张照片"
+
+[pagination]
+  prev = "← 上一页"
+  next = "下一页 →"
+
+[taxonomy]
+  categories = "分类"
+  tags = "标签"
+  categoriesDesc = "按栏目浏览所有文章"
+  tagsDesc = "按主题浏览所有文章"
+  postCount = "篇文章"
+  viewAll = "查看全部"
+  allCategories = "所有分类"
+  allTags = "所有标签"
+  postCountPrefix = "共 "
+  postCountSuffix = " 篇文章"
+
+[gallery]
+  title = "相册集"
+  desc = "用镜头记录生活中的光影与故事"
+  count = "张照片"
+  all = "全部相册"
+  close = "关闭"
+  prev = "上一张"
+  next = "下一张"
+  photoAlt = "照片"
+
+[about]
+  contact = "联系我"
+  contactDesc = "欢迎交流合作、投稿，或者只是打个招呼"
+
+[lang]
+  switchTo = "English"
+  current = "中文"
+
+[footer]
+  rights = "保留所有权利。"
+  credit = "由 Blank Magazine 主题驱动"

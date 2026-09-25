@@ -1,0 +1,42 @@
+/* 正文图片的「点击放大」。
+   灯箱本体的样式复用主题全局的 .lightbox 系列，这里只补图片链接和图注。 */
+
+.post-content a.post-img-link {
+  display: block;
+  border-bottom: none;
+  cursor: zoom-in;
+  line-height: 0;
+}
+
+.post-content a.post-img-link img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: opacity 0.2s ease;
+}
+
+.post-content a.post-img-link:hover img {
+  opacity: 0.94;
+}
+
+.post-content span.post-img-caption {
+  display: block;
+  margin-top: 0.7rem;
+  font-family: var(--font-sans, -apple-system, "Helvetica Neue", sans-serif);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  text-align: center;
+  letter-spacing: 0.02em;
+  color: var(--color-text-secondary, #8a8a8a);
+}
+
+/* 大图可能有好几 MB，加载期间给个提示，免得看着像卡住了 */
+.lightbox.is-loading::before {
+  content: "正在加载原图…";
+  position: absolute;
+  bottom: 50%;
+  font-family: var(--font-sans, -apple-system, sans-serif);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.45);
+}

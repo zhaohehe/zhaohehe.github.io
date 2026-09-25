@@ -1,0 +1,128 @@
+baseURL = "https://example.github.io/"
+# ↑ 本地预览用的占位地址，部署时 CI 会自动替换成你的真实地址。
+title = "zhaohehe"
+
+# 模板已经接管进 layouts/，主题现在只提供 CSS 和 JS。
+theme = "blank-magazine"
+
+# ============================================================
+#  语言
+# ============================================================
+# 中文是默认语言，放在根目录；英文放在 /en/ 下。
+# 一篇文章的两种语言写成同一文件夹里的 index.zh.md 和 index.en.md，
+# 这样它们共用同一个图片文件夹，照片不用存两份。
+defaultContentLanguage = "zh"
+defaultContentLanguageInSubdir = false
+
+enableRobotsTXT = true
+
+[pagination]
+  pagerSize = 9
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+# 两种语言共用的设置
+[params]
+  # 同一篇文章的图片只放在一个语言的文件夹里（Hugo 也只会发布一份），
+  # 这里指明是哪一种。默认语言是中文，所以填 zh；
+  # 如果哪天把 defaultContentLanguage 改成 en，这里也要跟着改。
+  imageOwnerLang = "zh"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      # 允许在 Markdown 里直接写 HTML
+      unsafe = true
+
+# ============================================================
+#  两种语言的站点信息。想改名字、简介、联系方式就改这里。
+# ============================================================
+[languages]
+  [languages.zh]
+    label = "中文"
+    locale = "zh-cn"
+    title = "zhaohehe"
+    weight = 1
+
+    [languages.zh.params]
+      description = "照片与文字"
+      author = "你的名字"
+      authorBio = "写作者 / 摄影爱好者"
+      slogan = "把平凡的日子，写成值得重读的文字"
+      email = "you@example.com"
+      # 留空就不显示对应的图标
+      instagram = ""
+      twitter = ""
+      facebook = ""
+      pinterest = ""
+      mainSections = ["posts"]
+      # 文章和列表页的日期格式
+      dateFormat = "2006年1月2日"
+      # 相册列表上的短日期
+      shortDateFormat = "2006年1月"
+
+    [[languages.zh.menu.main]]
+      name = "首页"
+      url = "/"
+      weight = 1
+    [[languages.zh.menu.main]]
+      name = "文章"
+      url = "/posts/"
+      weight = 2
+    [[languages.zh.menu.main]]
+      name = "相册"
+      url = "/gallery/"
+      weight = 3
+    [[languages.zh.menu.main]]
+      name = "分类"
+      url = "/categories/"
+      weight = 4
+    [[languages.zh.menu.main]]
+      name = "标签"
+      url = "/tags/"
+      weight = 5
+  [languages.en]
+    label = "English"
+    locale = "en-us"
+    title = "zhaohehe"
+    weight = 2
+
+    [languages.en.params]
+      description = "Photographs and words"
+      author = "Your Name"
+      authorBio = "Writer / Photographer"
+      slogan = "Ordinary days, written down to be reread"
+      email = "you@example.com"
+      instagram = ""
+      twitter = ""
+      facebook = ""
+      pinterest = ""
+      mainSections = ["posts"]
+      dateFormat = "January 2, 2006"
+      shortDateFormat = "January 2006"
+
+    [[languages.en.menu.main]]
+      name = "Home"
+      url = "/"
+      weight = 1
+    [[languages.en.menu.main]]
+      name = "Posts"
+      url = "/posts/"
+      weight = 2
+    [[languages.en.menu.main]]
+      name = "Gallery"
+      url = "/gallery/"
+      weight = 3
+    [[languages.en.menu.main]]
+      name = "Categories"
+      url = "/categories/"
+      weight = 4
+    [[languages.en.menu.main]]
+      name = "Tags"
+      url = "/tags/"
+      weight = 5

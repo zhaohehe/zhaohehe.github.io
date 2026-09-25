@@ -1,0 +1,68 @@
+name: 部署博客到 GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # 也可以在 Actions 页面手动点一下重新部署
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只跑一个部署，新推送排队而不是打断正在跑的
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  HUGO_VERSION: "0.166.0"
+  THEME_REPO: "https://github.com/codesign2020/blank-magazine"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取仓库
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 主题不进仓库，构建时拉最新版。想锁版本就把下面的 --depth=1
+      # 换成 --depth=1 --branch <提交哈希或标签> 之类。
+      - name: 拉取主题
+        run: git clone --depth=1 "$THEME_REPO" themes/blank-magazine
+
+      - name: 安装 Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: ${{ env.HUGO_VERSION }}
+          extended: true
+
+      - name: 配置 Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      # configure-pages 会算出正确地址：
+      # 用户站是 https://用户名.github.io，项目站是 https://用户名.github.io/仓库名
+      - name: 构建
+        env:
+          HUGO_ENVIRONMENT: production
+        run: hugo --minify --gc --baseURL "${{ steps.pages.outputs.base_url }}/"
+
+      - name: 打包
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 发布
+        id: deployment
+        uses: actions/deploy-pages@v4

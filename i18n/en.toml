@@ -1,0 +1,73 @@
+[nav]
+  search = "Search"
+  openMenu = "Open menu"
+  closeMenu = "Close menu"
+  closeSearch = "Close search"
+  searchPlaceholder = "Search posts..."
+
+[home]
+  featured = "FEATURED"
+  latest = "LATEST"
+  gallery = "GALLERY"
+  about = "ABOUT"
+  subscribe = "SUBSCRIBE"
+  readMore = "Read more →"
+  allPosts = "All posts →"
+  enterGallery = "Enter gallery →"
+  learnMore = "Learn more →"
+  subscribeTitle = "Subscribe"
+  subscribeDesc = "Get an email when something new is posted"
+  emailPlaceholder = "Your email address"
+  subscribeButton = "Subscribe"
+  subscribeThanks = "Thanks for subscribing!"
+  aboutTitle = "About"
+
+[stats]
+  posts = "posts"
+  tags = "tags"
+  albums = "albums"
+
+[post]
+  share = "Share"
+  tags = "Tags"
+  related = "Related posts"
+  commentsHint = "Comments coming soon"
+  photoCount = "photos"
+
+[pagination]
+  prev = "← Previous"
+  next = "Next →"
+
+[taxonomy]
+  categories = "Categories"
+  tags = "Tags"
+  categoriesDesc = "Browse every post by category"
+  tagsDesc = "Browse every post by tag"
+  postCount = "posts"
+  viewAll = "View all"
+  allCategories = "All categories"
+  allTags = "All tags"
+  postCountPrefix = ""
+  postCountSuffix = " posts"
+
+[gallery]
+  title = "Galleries"
+  desc = "Light and stories, kept in photographs"
+  count = "photos"
+  all = "All galleries"
+  close = "Close"
+  prev = "Previous"
+  next = "Next"
+  photoAlt = "Photo"
+
+[about]
+  contact = "Get in touch"
+  contactDesc = "For collaborations, submissions, or just to say hello"
+
+[lang]
+  switchTo = "中文"
+  current = "English"
+
+[footer]
+  rights = "All rights reserved."
+  credit = "Powered by the Blank Magazine theme"

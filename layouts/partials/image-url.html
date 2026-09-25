@@ -1,0 +1,48 @@
+{{- /*
+  把一个图片路径解析成最终可用的网址。
+
+  参数：
+    Page  当前页面
+    Path  图片路径，可以是：
+            https://...      外链（R2 上的照片就是这种），原样返回
+            /img/x.jpg       以 / 开头的站点绝对路径，补上部署子目录
+            x.jpg            页面相对路径，指向实际存放该文件的页面
+
+  为什么需要这个：
+    中英文两个版本的同一篇文章共用同一个图片文件夹（index.zh.md / index.en.md
+    放在一起），但 Hugo 只会把图片资源分配给默认语言的那一页。
+    所以英文页面要用图片时，得知道「真正持有文件的是哪一页」，
+    否则 /en/ 下的相对路径会 404。
+*/ -}}
+
+{{- $page := .Page -}}
+{{- $path := .Path | default "" -}}
+{{- $url := $path -}}
+
+{{- if $path -}}
+  {{- $isAbsoluteUrl := or
+        (hasPrefix $path "http://")
+        (hasPrefix $path "https://")
+        (hasPrefix $path "//")
+        (hasPrefix $path "data:") -}}
+
+  {{- if not $isAbsoluteUrl -}}
+    {{- if hasPrefix $path "/" -}}
+      {{- /* 站点绝对路径：交给 relURL 补上部署子目录 */ -}}
+      {{- $url = $path | relURL -}}
+    {{- else -}}
+      {{- /* 页面相对路径：图片实际发布在哪个语言目录下，就指向那里。
+             Hugo 只发布一份，所以不能简单地跟着当前语言走。 */ -}}
+      {{- $ownerLang := site.Params.imageOwnerLang | default site.Language.Lang -}}
+      {{- $owner := $page -}}
+      {{- range $page.AllTranslations -}}
+        {{- if eq .Lang $ownerLang -}}
+          {{- $owner = . -}}
+        {{- end -}}
+      {{- end -}}
+      {{- $url = printf "%s%s" $owner.RelPermalink $path -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $url -}}

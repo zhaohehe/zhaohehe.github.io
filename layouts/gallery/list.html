@@ -1,0 +1,40 @@
+{{ define "main" }}
+<section class="page-header">
+  <div class="container">
+    <p class="page-eyebrow">GALLERY</p>
+    <h1 class="page-title">{{ T "gallery.title" }}</h1>
+    <p class="page-desc">{{ T "gallery.desc" }}</p>
+    <div class="page-divider"></div>
+  </div>
+</section>
+
+<section class="gallery-section">
+  <div class="container">
+    <div class="gallery-grid">
+      {{ range .Pages }}
+      {{ $album := . }}
+      {{ $photos := partial "gallery-photos.html" . }}
+      <a href="{{ .Permalink }}" class="gallery-card">
+        <div class="gallery-card-cover">
+          {{ with .Params.cover }}
+          <img src="{{ partial "image-url.html" (dict "Page" $album "Path" .) }}" alt="{{ $album.Title }}" loading="lazy">
+          {{ else with $photos }}
+          <img src="{{ partial "image-url.html" (dict "Page" $album "Path" (index . 0)) }}" alt="{{ $album.Title }}" loading="lazy">
+          {{ end }}
+          <div class="gallery-card-overlay">
+            <span class="gallery-count">{{ len $photos }} {{ T "gallery.count" }}</span>
+          </div>
+        </div>
+        <div class="gallery-card-info">
+          <h3 class="gallery-card-title">{{ .Title }}</h3>
+          <p class="gallery-card-date">{{ .Date.Format (.Site.Params.shortDateFormat | default "2006-01") }}</p>
+          {{ with .Description }}
+          <p class="gallery-card-desc">{{ . | truncate 80 }}</p>
+          {{ end }}
+        </div>
+      </a>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}

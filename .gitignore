@@ -1,0 +1,19 @@
+# Hugo 构建产物
+public/
+resources/_gen/
+.hugo_build.lock
+
+# 主题由 CI 或 scripts/setup-theme.sh 拉取，不进仓库
+themes/
+
+# scripts/preview.sh 下载的 Hugo 二进制（118 MB），绝不能进仓库
+.tools/
+
+# 图片上传配置（含 R2 密钥路径等本机信息）
+.photo-env
+
+# 待上传的原图，不进仓库
+photos-inbox/
+
+# macOS
+.DS_Store
