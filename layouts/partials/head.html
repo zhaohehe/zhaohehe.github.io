@@ -19,13 +19,15 @@
 <link rel="canonical" href="{{ .Permalink }}">
 <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" href="{{ "index.xml" | absURL }}">
 
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+{{/*
+  字体全部自己托管，不再请求 fonts.googleapis.com。
+  原因：那个域名在中国大陆基本连不上，而 <link rel="stylesheet"> 会阻塞渲染，
+  页面会一直白屏等到请求超时——这就是「加载很慢」的真正原因。
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  只自托管拉丁字形（Source Serif 4 / Inter，体积很小）；
+  中文交给系统字体（宋体系），思源宋体这类 CJK 字体动辄十几 MB，不值得自托管。
+*/}}
+<link rel="stylesheet" href="{{ "css/fonts.css" | relURL }}">
 
 <!-- Styles -->
 <link rel="stylesheet" href="{{ "css/style.css" | relURL }}?v={{ now.Unix }}">
