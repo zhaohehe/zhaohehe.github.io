@@ -20,13 +20,29 @@ fi
 
 WIDTH="${WIDTH:-1600}"
 WEBP_QUALITY="${WEBP_QUALITY:-82}"
+# 灯箱用的大图：0 表示保持原始分辨率
+FULL_WIDTH="${FULL_WIDTH:-0}"
+FULL_QUALITY="${FULL_QUALITY:-90}"
 R2_REMOTE="${R2_REMOTE:-r2}"
 : "${R2_BUCKET:?未设置 R2_BUCKET，请照着 README 创建 .photo-env}"
 : "${R2_PUBLIC_BASE:?未设置 R2_PUBLIC_BASE，请照着 README 创建 .photo-env}"
 
-for tool in sips cwebp rclone; do
+# 优先用项目里自带的 rclone（.tools/rclone），其次是系统里装的
+if [[ -x "$ROOT_DIR/.tools/rclone" ]]; then
+  RCLONE="$ROOT_DIR/.tools/rclone"
+elif command -v rclone >/dev/null; then
+  RCLONE="$(command -v rclone)"
+else
+  echo "缺少 rclone。"
+  echo "  下载独立二进制（几秒，不用 brew）："
+  echo "    curl -fsSL -o /tmp/rclone.zip https://downloads.rclone.org/rclone-current-osx-arm64.zip"
+  echo "    unzip -q /tmp/rclone.zip -d /tmp/rc && cp /tmp/rc/*/rclone \"$ROOT_DIR/.tools/rclone\" && chmod +x \"$ROOT_DIR/.tools/rclone\""
+  exit 1
+fi
+
+for tool in sips cwebp; do
   if ! command -v "$tool" >/dev/null; then
-    echo "缺少 $tool。sips 是 macOS 自带，另外两个用 brew install webp rclone 安装。"
+    echo "缺少 $tool。sips 是 macOS 自带，cwebp 用 brew install webp 安装。"
     exit 1
   fi
 done
@@ -70,6 +86,8 @@ for src in "${INPUTS[@]}"; do
   base_jpg="$WORK/base-$stem.jpg"
   out_jpg="$WORK/$stem.jpg"
   out_webp="$WORK/$stem.webp"
+  full_jpg="$WORK/$stem-full.jpg"
+  full_webp="$WORK/$stem-full.webp"
 
   # 后面的中间文件都按 .jpg 命名，所以这里必须保证它真的是 JPEG。
   # JPEG 直接复用；HEIC（iPhone 默认格式）、PNG、TIFF 都用 sips 转一道，
@@ -91,10 +109,20 @@ for src in "${INPUTS[@]}"; do
   fi
 
   cwebp -quiet -q "$WEBP_QUALITY" "$out_jpg" -o "$out_webp"
-  rclone copyto "$out_webp" "$R2_REMOTE:$R2_BUCKET/$PREFIX/${stem}.webp" --s3-no-check-bucket
+  "$RCLONE" copyto "$out_webp" "$R2_REMOTE:$R2_BUCKET/$PREFIX/${stem}.webp" --s3-no-check-bucket
+
+  # 点开放大时用的那份。不指定 FULL_WIDTH 就保留原始分辨率。
+  if (( FULL_WIDTH > 0 )) && (( $(long_edge "$base_jpg") > FULL_WIDTH )); then
+    sips -Z "$FULL_WIDTH" "$base_jpg" --out "$full_jpg" >/dev/null
+  else
+    cp "$base_jpg" "$full_jpg"
+  fi
+  cwebp -quiet -q "$FULL_QUALITY" "$full_jpg" -o "$full_webp"
+  "$RCLONE" copyto "$full_webp" "$R2_REMOTE:$R2_BUCKET/$PREFIX/${stem}-full.webp" --s3-no-check-bucket
 
   URLS+=("${R2_PUBLIC_BASE%/}/$PREFIX/${stem}.webp")
-  printf '✓ %-36s 原图 %7s → %7s\n' "$name" "$(human "$base_jpg")" "$(human "$out_webp")"
+  printf '✓ %-32s 原图 %7s → 正文 %7s + 大图 %7s\n' \
+    "$name" "$(human "$base_jpg")" "$(human "$out_webp")" "$(human "$full_webp")"
 done
 
 echo
