@@ -1,8 +1,8 @@
 {{ define "main" }}
-{{/* 自动汇总相册图片：同目录本地图片 + front matter 的 photos */}}
+{{/* 汇总相册图片：同目录本地图片 + front matter 的 photos */}}
 {{ $photos := partial "gallery-photos.html" . }}
 {{/* 点开放大时用原始分辨率的那份：foo.webp → foo-full.webp，
-     和文章正文的灯箱用同一套命名约定。没有大图时 JS 会自动退回缩略图。 */}}
+     和文章正文用同一套命名约定。没有大图时查看器会自动退回缩略图。 */}}
 {{ $fulls := slice }}
 {{ range $photos }}
   {{ $fulls = $fulls | append (replaceRE `\.(webp|jpe?g)$` "-full.$1" (partial "image-url.html" (dict "Page" $ "Path" .))) }}
@@ -36,63 +36,22 @@
     <div class="container">
       <div class="photo-masonry">
         {{ range $index, $photo := $photos }}
+        {{ $thumb := partial "image-url.html" (dict "Page" $ "Path" $photo) }}
+        {{ $full := index $fulls $index }}
         <figure class="photo-item" data-index="{{ $index }}">
-          <img src="{{ partial "image-url.html" (dict "Page" $ "Path" $photo) }}" alt="{{ $.Title }} - {{ T "gallery.photoAlt" }} {{ add $index 1 }}" loading="lazy" onclick="openLightbox({{ $index }})">
+          <img src="{{ $thumb }}"
+               alt="{{ $.Title }} - {{ T "gallery.photoAlt" }} {{ add $index 1 }}"
+               data-photo
+               data-full="{{ $full }}"
+               data-thumb="{{ $thumb }}"
+               data-caption="{{ $.Title }}"
+               {{ with partial "exif-line.html" (dict "Path" $thumb) }}data-exif="{{ . }}"{{ end }}
+               loading="lazy">
         </figure>
         {{ end }}
       </div>
     </div>
   </div>
-
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <button class="lightbox-close" aria-label="{{ T "gallery.close" }}">×</button>
-    <button class="lightbox-prev" onclick="event.stopPropagation(); prevPhoto()" aria-label="{{ T "gallery.prev" }}">‹</button>
-    <img id="lightbox-img" src="" alt="">
-    <button class="lightbox-next" onclick="event.stopPropagation(); nextPhoto()" aria-label="{{ T "gallery.next" }}">›</button>
-    <div class="lightbox-counter" id="lightbox-counter"></div>
-  </div>
-
-  <script>
-    // 网格里加载的是缩略图（快），点开时换成原始分辨率的那份。
-    // 万一某张没有 -full 版本，onerror 会自动退回缩略图，不会裂图。
-    const photos = {{ $photos | jsonify | safeJS }};
-    const fulls = {{ $fulls | jsonify | safeJS }};
-    let currentIndex = 0;
-    const lightboxImg = document.getElementById('lightbox-img');
-
-    lightboxImg.addEventListener('error', function () {
-      const fallback = this.dataset.fallback;
-      if (fallback && this.getAttribute('src') !== fallback) {
-        this.src = fallback;
-      }
-    });
-
-    function showPhoto(index) {
-      currentIndex = ((index % photos.length) + photos.length) % photos.length;
-      lightboxImg.dataset.fallback = photos[currentIndex];
-      lightboxImg.src = fulls[currentIndex] || photos[currentIndex];
-      document.getElementById('lightbox-counter').textContent =
-        (currentIndex + 1) + ' / ' + photos.length;
-    }
-    function openLightbox(index) {
-      showPhoto(index);
-      document.getElementById('lightbox').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-    function prevPhoto() { showPhoto(currentIndex - 1); }
-    function nextPhoto() { showPhoto(currentIndex + 1); }
-    document.addEventListener('keydown', function(e) {
-      if (!document.getElementById('lightbox').classList.contains('open')) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') prevPhoto();
-      if (e.key === 'ArrowRight') nextPhoto();
-    });
-  </script>
 
   <!-- Gallery Navigation -->
   <nav class="gallery-nav">

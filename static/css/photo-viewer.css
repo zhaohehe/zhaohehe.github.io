@@ -1,0 +1,200 @@
+/* 大图查看器。完全独立，不依赖主题的 .lightbox 样式，
+   文章正文和相册页共用同一套。所有可调参数集中在下面这组变量里。 */
+
+.pv {
+  --pv-bg: rgba(10, 10, 12, 0.96);
+  --pv-fg: #fff;
+  --pv-dim: rgba(255, 255, 255, 0.55);
+  --pv-dimmer: rgba(255, 255, 255, 0.4);
+  --pv-chip: rgba(255, 255, 255, 0.09);
+  --pv-chip-hover: rgba(255, 255, 255, 0.2);
+
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  padding: 4.5rem 5.5rem 2rem;
+  box-sizing: border-box;
+  background: var(--pv-bg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-family: var(--font-sans, -apple-system, "Helvetica Neue", sans-serif);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.24s ease, visibility 0.24s;
+}
+
+.pv.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ── 图片 ───────────────────────────────────────────── */
+
+.pv__img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 2px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: scale(0.985);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.pv__img.is-ready {
+  opacity: 1;
+  transform: none;
+}
+
+.pv__loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  color: var(--pv-dimmer);
+}
+
+/* ── 按钮 ───────────────────────────────────────────── */
+
+.pv__btn {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--pv-chip);
+  color: var(--pv-fg);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+}
+
+.pv__btn:hover {
+  background: var(--pv-chip-hover);
+}
+
+.pv__btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 2px;
+}
+
+/* 关闭：右上角，最显眼的一个 */
+.pv__close {
+  top: 1.2rem;
+  right: 1.2rem;
+  width: 44px;
+  height: 44px;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.pv__close:hover {
+  transform: rotate(90deg);
+}
+
+/* 左右切换 */
+.pv__nav {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.pv__nav:hover {
+  transform: translateY(-50%) scale(1.08);
+}
+
+.pv__prev { left: 1.2rem; }
+.pv__next { right: 1.2rem; }
+
+/* 只有一张图时藏掉切换按钮 */
+.pv.is-single .pv__nav,
+.pv.is-single .pv__count {
+  display: none;
+}
+
+/* ── 底部信息 ───────────────────────────────────────── */
+
+.pv__info {
+  flex: 0 0 auto;
+  max-width: min(760px, 88vw);
+  padding: 0.65rem 1.5rem;
+  border-radius: 10px;
+  background: var(--pv-chip);
+  text-align: center;
+  color: var(--pv-fg);
+}
+
+.pv__count {
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  color: var(--pv-dimmer);
+}
+
+.pv__caption {
+  margin-top: 0.2rem;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.pv__exif {
+  margin-top: 0.25rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  color: var(--pv-dim);
+}
+
+.pv__info:empty {
+  display: none;
+}
+
+/* ── 手机 ───────────────────────────────────────────── */
+
+@media (max-width: 760px) {
+  .pv {
+    padding: 3.6rem 0.75rem 1rem;
+  }
+
+  .pv__close {
+    top: 0.7rem;
+    right: 0.7rem;
+    width: 40px;
+    height: 40px;
+    font-size: 23px;
+  }
+
+  /* 手机上把箭头挪到底部，别挡住照片 */
+  .pv__nav {
+    top: auto;
+    bottom: 0.9rem;
+    transform: none;
+    width: 42px;
+    height: 42px;
+  }
+
+  .pv__nav:hover {
+    transform: none;
+  }
+
+  .pv__prev { left: 0.9rem; }
+  .pv__next { right: 0.9rem; }
+
+  .pv__info {
+    margin-bottom: 3.2rem;
+    padding: 0.55rem 1rem;
+  }
+
+  .pv__caption { font-size: 0.8rem; }
+}

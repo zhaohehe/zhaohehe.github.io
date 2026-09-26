@@ -32,5 +32,11 @@
 <!-- Styles -->
 <link rel="stylesheet" href="{{ "css/style.css" | relURL }}?v={{ now.Unix }}">
 
+{{/* 自己的样式和脚本：正文图片排版 + 大图查看器。
+     放在 head 里统一引入，不要塞进正文（之前塞在 <p> 里，会重复加载）。 */}}
+<link rel="stylesheet" href="{{ "css/post-figures.css" | relURL }}">
+<link rel="stylesheet" href="{{ "css/photo-viewer.css" | relURL }}">
+<script src="{{ "js/photo-viewer.js" | relURL }}" defer></script>
+
 <!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">

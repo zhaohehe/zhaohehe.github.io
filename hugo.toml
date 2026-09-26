@@ -30,6 +30,11 @@ enableRobotsTXT = true
   # 如果哪天把 defaultContentLanguage 改成 en，这里也要跟着改。
   imageOwnerLang = "zh"
 
+  # 拍摄参数（光圈/快门/ISO/焦距）显示在哪：
+  #   false = 只在点开大图时显示。正文里只留图注，干净。
+  #   true  = 正文里图注下面也显示一行小字。
+  showExifInline = false
+
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 

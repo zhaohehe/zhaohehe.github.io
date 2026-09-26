@@ -1,0 +1,21 @@
+{{- /*
+  按图片路径查出拍摄参数，拼成一行可显示的文本。
+
+  数据来自 data/photo-exif.json（由 scripts/exif.py 生成，上传照片时自动更新）。
+  查不到就返回空字符串，模板里用 with 包一下即可。
+
+  用法：{{ with partial "exif-line.html" (dict "Path" $src) }}data-exif="{{ . }}"{{ end }}
+*/ -}}
+
+{{- $line := "" -}}
+{{- $table := index site.Data "photo-exif" | default dict -}}
+{{- with index $table (path.Base .Path) -}}
+  {{- $bits := slice -}}
+  {{- with .aperture }}{{ $bits = $bits | append . }}{{ end -}}
+  {{- with .shutter }}{{ $bits = $bits | append . }}{{ end -}}
+  {{- with .iso }}{{ $bits = $bits | append (printf "ISO %s" .) }}{{ end -}}
+  {{- with .focal }}{{ $bits = $bits | append . }}{{ end -}}
+  {{- $line = delimit $bits " · " -}}
+{{- end -}}
+
+{{- return $line -}}

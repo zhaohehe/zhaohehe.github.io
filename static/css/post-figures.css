@@ -1,11 +1,9 @@
-/* 正文照片：点击放大、图注、拍摄参数、以及排版指令。
-   灯箱本体的样式复用主题全局的 .lightbox 系列，这里不重复定义。 */
+/* 正文照片的排版：图注、以及 [left]/[right]/[wide]/[full]/[small]/[half] 指令。
+   大图查看器的样式在 photo-viewer.css 里，两者互不相干。 */
 
-/* ── 基本结构 ─────────────────────────────────────────────
-   渲染钩子会给每张图套一层 <span class="post-figure">。
+/* 渲染钩子给每张图套一层 <span class="post-figure">。
    span 是行内标签，套在 Markdown 生成的 <p> 里完全合法；
    再用 display:block / float 做排版，既能整体控制又不破坏 HTML。 */
-
 .post-content span.post-figure {
   display: block;
 }
@@ -39,7 +37,7 @@
   color: var(--color-text-secondary, #8a8a8a);
 }
 
-/* 拍摄参数：图注下面一行小字 */
+/* 拍摄参数（默认不显示，由 hugo.toml 的 showExifInline 控制） */
 .post-content span.post-img-exif {
   display: block;
   margin-top: 0.3rem;
@@ -103,17 +101,6 @@
 .post-content h2,
 .post-content h3 {
   clear: both;
-}
-
-/* 大图可能有好几 MB，加载期间给个提示，免得看着像卡住了 */
-.lightbox.is-loading::before {
-  content: "正在加载原图…";
-  position: absolute;
-  bottom: 50%;
-  font-family: var(--font-sans, -apple-system, sans-serif);
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.45);
 }
 
 /* ── 手机 ─────────────────────────────────────────────────

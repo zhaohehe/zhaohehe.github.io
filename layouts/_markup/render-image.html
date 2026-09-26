@@ -51,22 +51,8 @@
 {{- end -}}
 
 {{- /* 按文件名查拍摄参数。表由 scripts/exif.py 生成，上传照片时自动更新。 */ -}}
-{{- $exif := index (index site.Data "photo-exif" | default dict) (path.Base $src) -}}
-{{- $exifLine := "" -}}
-{{- with $exif -}}
-  {{- $bits := slice -}}
-  {{- with .aperture }}{{ $bits = $bits | append . }}{{ end -}}
-  {{- with .shutter }}{{ $bits = $bits | append . }}{{ end -}}
-  {{- with .iso }}{{ $bits = $bits | append (printf "ISO %s" .) }}{{ end -}}
-  {{- with .focal }}{{ $bits = $bits | append . }}{{ end -}}
-  {{- $exifLine = delimit $bits " · " -}}
-{{- end -}}
+{{- $exifLine := partial "exif-line.html" (dict "Path" $src) -}}
 
-{{- /* 一页只引入一次灯箱的样式和脚本 */ -}}
-{{- if not (.Page.Store.Get "postLightboxLoaded") -}}
-  {{- .Page.Store.Set "postLightboxLoaded" true -}}
-<link rel="stylesheet" href="{{ "css/post-lightbox.css" | relURL }}">
-<script src="{{ "js/post-lightbox.js" | relURL }}" defer></script>
-{{- end -}}
-
-<span class="post-figure{{ with $size }} post-figure--{{ . }}{{ end }}"><a class="post-img-link" href="{{ $full }}" data-fallback="{{ $src }}"{{ with $caption }} data-caption="{{ . }}"{{ end }}{{ with $exifLine }} data-exif="{{ . }}"{{ end }}><img src="{{ $src }}" alt="{{ $alt }}" loading="lazy" decoding="async"></a>{{ with $caption }}<span class="post-img-caption">{{ . }}</span>{{ end }}{{ with $exifLine }}<span class="post-img-exif">{{ . }}</span>{{ end }}</span>
+{{- /* 拍摄参数始终带在链接上（点开大图时灯箱会显示），
+       是否同时在正文里显示由 showExifInline 决定。 */ -}}
+<span class="post-figure{{ with $size }} post-figure--{{ . }}{{ end }}"><a class="post-img-link" href="{{ $full }}"><img src="{{ $src }}" alt="{{ $alt }}" data-photo data-full="{{ $full }}" data-thumb="{{ $src }}"{{ with $caption }} data-caption="{{ . }}"{{ end }}{{ with $exifLine }} data-exif="{{ . }}"{{ end }} loading="lazy" decoding="async"></a>{{ with $caption }}<span class="post-img-caption">{{ . }}</span>{{ end }}{{ if and $exifLine site.Params.showExifInline }}<span class="post-img-exif">{{ $exifLine }}</span>{{ end }}</span>
