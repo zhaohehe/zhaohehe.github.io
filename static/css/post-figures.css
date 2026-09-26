@@ -1,9 +1,12 @@
-/* 正文照片的排版：图注、以及 [left]/[right]/[wide]/[full]/[small]/[half] 指令。
+/* 正文照片的样式。
+
+   设计上刻意保持简单：所有照片宽度一致（和正文栏同宽），
+   图注是图片下面一行居中的小字，没有任何左右浮动或尺寸变化。
    大图查看器的样式在 photo-viewer.css 里，两者互不相干。 */
 
 /* 渲染钩子给每张图套一层 <span class="post-figure">。
-   span 是行内标签，套在 Markdown 生成的 <p> 里完全合法；
-   再用 display:block / float 做排版，既能整体控制又不破坏 HTML。 */
+   span 是行内标签，套在 Markdown 生成的 <p> 里合法；
+   再用 display:block 让它整块参与排版。 */
 .post-content span.post-figure {
   display: block;
 }
@@ -26,18 +29,20 @@
   opacity: 0.94;
 }
 
+/* 图注：图片下面一行小字 */
 .post-content span.post-img-caption {
   display: block;
   margin-top: 0.7rem;
   font-family: var(--font-sans, -apple-system, "Helvetica Neue", sans-serif);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   line-height: 1.6;
   text-align: center;
   letter-spacing: 0.02em;
   color: var(--color-text-secondary, #8a8a8a);
 }
 
-/* 拍摄参数（默认不显示，由 hugo.toml 的 showExifInline 控制） */
+/* 拍摄参数。默认不显示（hugo.toml 里 showExifInline = false），
+   只在点开大图时由查看器显示。想让它也出现在正文里，把那个开关改成 true。 */
 .post-content span.post-img-exif {
   display: block;
   margin-top: 0.3rem;
@@ -47,81 +52,4 @@
   text-align: center;
   letter-spacing: 0.08em;
   color: var(--color-text-muted, #a3a3a3);
-}
-
-/* ── 排版指令 ─────────────────────────────────────────────
-   写法：在图注最前面加方括号，例如 ![说明](图片 "[left] 傍晚的海") */
-
-/* 图片靠左，紧随其后的文字绕排在右边 */
-.post-content span.post-figure--left {
-  float: left;
-  width: 52%;
-  margin: 0.4rem 2rem 1.2rem 0;
-}
-
-/* 图片靠右，紧随其后的文字绕排在左边 */
-.post-content span.post-figure--right {
-  float: right;
-  width: 52%;
-  margin: 0.4rem 0 1.2rem 2rem;
-}
-
-/* 出血：比正文栏宽，左右对称溢出 */
-.post-content span.post-figure--wide {
-  clear: both;
-  width: min(1180px, 94vw);
-  margin-left: 50%;
-  transform: translateX(-50%);
-}
-
-/* 通栏：占满整个屏幕宽度 */
-.post-content span.post-figure--full {
-  clear: both;
-  width: 100vw;
-  margin-left: 50%;
-  transform: translateX(-50%);
-}
-
-/* 缩小并居中。别设太小，否则照片的细节就白拍了 */
-.post-content span.post-figure--small {
-  clear: both;
-  width: 78%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.post-content span.post-figure--half {
-  clear: both;
-  width: 58%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* 浮动图片之后的标题要清一下，否则会挤在图片旁边 */
-.post-content h2,
-.post-content h3 {
-  clear: both;
-}
-
-/* ── 手机 ─────────────────────────────────────────────────
-   小屏幕上所有排版指令一律失效，全部满宽，不然会挤成一团 */
-@media (max-width: 760px) {
-  .post-content span.post-figure--left,
-  .post-content span.post-figure--right {
-    float: none;
-    width: 100%;
-    margin: 0 0 0.5rem;
-  }
-
-  .post-content span.post-figure--wide,
-  .post-content span.post-figure--full {
-    width: 100%;
-    margin-left: 0;
-    transform: none;
-  }
-
-  .post-content span.post-figure--small,
-  .post-content span.post-figure--half {
-    width: 100%;
-  }
 }

@@ -33,8 +33,10 @@
       '<button class="pv__btn pv__close" type="button" aria-label="关闭">&times;</button>' +
       '<button class="pv__btn pv__nav pv__prev" type="button" aria-label="上一张">&#8249;</button>' +
       '<button class="pv__btn pv__nav pv__next" type="button" aria-label="下一张">&#8250;</button>' +
-      '<div class="pv__loading">正在加载原图…</div>' +
-      '<img class="pv__img" alt="">' +
+      '<div class="pv__stage">' +
+        '<div class="pv__loading">正在加载原图…</div>' +
+        '<img class="pv__img" alt="">' +
+      '</div>' +
       '<div class="pv__info">' +
         '<div class="pv__count"></div>' +
         '<div class="pv__caption"></div>' +

@@ -1,50 +1,32 @@
 {{- /*
-  Markdown 图片渲染钩子。三件事：
+  Markdown 图片渲染钩子。
 
-  1. 让照片可以点击放大（灯箱与相册页共用同一套样式）
-  2. 按文件名自动查出拍摄参数，显示在图注下面
-  3. 支持排版尺寸指令，让图文错落有致
+  做三件事：
+    1. 让照片可以点击放大（大图查看器见 static/js/photo-viewer.js）
+    2. 按文件名自动查出拍摄参数，带在图片上，点开大图时显示
+    3. 图注显示成图片下面的一行小字
 
-  用法还是最普通的 Markdown：
+  用法就是最普通的 Markdown，没有任何自定义标记：
 
       ![替代文字](图片地址)
       ![替代文字](图片地址 "图注文字")
-      ![替代文字](图片地址 "[wide] 图注文字")
 
-  可选的排版指令（写在图注最前面，方括号里）：
+  所有照片宽度一致，和正文栏同宽。
 
-      （不写）   与正文同宽 —— 最稳妥的默认
-      [left]    图片靠左，紧跟其后的文字绕排在右边
-      [right]   图片靠右，紧随其后的文字绕排在左边
-      [wide]    出血，比正文栏宽 —— 适合风景
-      [full]    占满整个屏幕宽度 —— 强调用，一篇别超过两张
-      [small]   缩到 78% 居中
-      [half]    缩到 58% 居中
-
-  注意：图片在 Markdown 里独占一段，会被包进 <p>；<p> 里面不能放块级元素。
+  注意：图片在 Markdown 里独占一段，会被包进 <p>；<p> 里不能放块级元素。
   所以这里用 <span> 当容器（span 是行内标签，里面套 span/a/img 完全合法），
-  再用 CSS 给它 display:block / float —— 这样既能整体排版，又不破坏 HTML 结构。
+  再用 CSS 给它 display:block —— 既不破坏 HTML，又能整块控制间距。
 */ -}}
 
 {{- $dest := .Destination -}}
 {{- $alt := .PlainText -}}
-{{- $title := .Title -}}
-
-{{- /* 解析开头的尺寸指令 */ -}}
-{{- $size := "" -}}
-{{- $caption := $title -}}
-{{- range $s := slice "left" "right" "wide" "full" "small" "half" -}}
-  {{- if hasPrefix $title (printf "[%s]" $s) -}}
-    {{- $size = $s -}}
-    {{- $caption = replaceRE `^\[[a-z]+\]\s*` "" $title -}}
-  {{- end -}}
-{{- end -}}
+{{- $caption := .Title -}}
 
 {{- /* 解析图片地址（中英文共用同一个图片文件夹，这里会自动找到正确的路径）*/ -}}
 {{- $src := partial "image-url.html" (dict "Page" .Page "Path" $dest) -}}
 
-{{- /* 灯箱指向「完整分辨率」的那一份：foo.webp → foo-full.webp。
-       上传脚本会给每张照片同时生成两份，万一某张没有，JS 会自动退回正文图。 */ -}}
+{{- /* 大图用「完整分辨率」的那一份：foo.webp → foo-full.webp。
+       上传脚本会给每张照片同时生成两份，万一某张没有，查看器里会自动退回正文图。 */ -}}
 {{- $full := $src -}}
 {{- if findRE `\.(webp|jpe?g)$` $src -}}
   {{- $full = replaceRE `\.(webp|jpe?g)$` "-full.$1" $src -}}
@@ -53,6 +35,4 @@
 {{- /* 按文件名查拍摄参数。表由 scripts/exif.py 生成，上传照片时自动更新。 */ -}}
 {{- $exifLine := partial "exif-line.html" (dict "Path" $src) -}}
 
-{{- /* 拍摄参数始终带在链接上（点开大图时灯箱会显示），
-       是否同时在正文里显示由 showExifInline 决定。 */ -}}
-<span class="post-figure{{ with $size }} post-figure--{{ . }}{{ end }}"><a class="post-img-link" href="{{ $full }}"><img src="{{ $src }}" alt="{{ $alt }}" data-photo data-full="{{ $full }}" data-thumb="{{ $src }}"{{ with $caption }} data-caption="{{ . }}"{{ end }}{{ with $exifLine }} data-exif="{{ . }}"{{ end }} loading="lazy" decoding="async"></a>{{ with $caption }}<span class="post-img-caption">{{ . }}</span>{{ end }}{{ if and $exifLine site.Params.showExifInline }}<span class="post-img-exif">{{ $exifLine }}</span>{{ end }}</span>
+<span class="post-figure"><a class="post-img-link" href="{{ $full }}"><img src="{{ $src }}" alt="{{ $alt }}" data-photo data-full="{{ $full }}" data-thumb="{{ $src }}"{{ with $caption }} data-caption="{{ . }}"{{ end }}{{ with $exifLine }} data-exif="{{ . }}"{{ end }} loading="lazy" decoding="async"></a>{{ with $caption }}<span class="post-img-caption">{{ . }}</span>{{ end }}{{ if and $exifLine site.Params.showExifInline }}<span class="post-img-exif">{{ $exifLine }}</span>{{ end }}</span>

@@ -1,10 +1,10 @@
-/* 大图查看器。完全独立，不依赖主题的 .lightbox 样式，
-   文章正文和相册页共用同一套。所有可调参数集中在下面这组变量里。 */
+/* 大图查看器。完全独立，不依赖主题的样式，
+   文章正文和相册页共用同一套。可调参数集中在下面这组变量里。 */
 
 .pv {
-  --pv-bg: rgba(10, 10, 12, 0.96);
+  --pv-bg: rgba(10, 10, 12, 0.965);
   --pv-fg: #fff;
-  --pv-dim: rgba(255, 255, 255, 0.55);
+  --pv-dim: rgba(255, 255, 255, 0.58);
   --pv-dimmer: rgba(255, 255, 255, 0.4);
   --pv-chip: rgba(255, 255, 255, 0.09);
   --pv-chip-hover: rgba(255, 255, 255, 0.2);
@@ -12,13 +12,12 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.1rem;
-  padding: 4.5rem 5.5rem 2rem;
-  box-sizing: border-box;
+  gap: 0.9rem;
+  /* 上边留给关闭按钮，两侧留给箭头，下边留给信息条 */
+  padding: 3.6rem 5rem 1.6rem;
   background: var(--pv-bg);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
@@ -33,7 +32,19 @@
   visibility: visible;
 }
 
-/* ── 图片 ───────────────────────────────────────────── */
+/* ── 图片区 ───────────────────────────────────────────
+   flex:1 + min-height:0 是关键。不加 min-height，
+   flex 子项不会收缩到内容以下，图片就会把底部信息条顶出屏幕。 */
+
+.pv__stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .pv__img {
   max-width: 100%;
@@ -42,7 +53,7 @@
   height: auto;
   object-fit: contain;
   border-radius: 2px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
   opacity: 0;
   transform: scale(0.985);
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -60,6 +71,7 @@
   transform: translate(-50%, -50%);
   font-size: 0.78rem;
   letter-spacing: 0.16em;
+  white-space: nowrap;
   color: var(--pv-dimmer);
 }
 
@@ -67,6 +79,7 @@
 
 .pv__btn {
   position: absolute;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,7 +89,7 @@
   background: var(--pv-chip);
   color: var(--pv-fg);
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .pv__btn:hover {
@@ -88,10 +101,10 @@
   outline-offset: 2px;
 }
 
-/* 关闭：右上角，最显眼的一个 */
+/* 关闭：右上角 */
 .pv__close {
-  top: 1.2rem;
-  right: 1.2rem;
+  top: 1rem;
+  right: 1rem;
   width: 44px;
   height: 44px;
   font-size: 26px;
@@ -116,25 +129,30 @@
   transform: translateY(-50%) scale(1.08);
 }
 
-.pv__prev { left: 1.2rem; }
-.pv__next { right: 1.2rem; }
+.pv__prev { left: 1rem; }
+.pv__next { right: 1rem; }
 
-/* 只有一张图时藏掉切换按钮 */
+/* 只有一张图时，切换按钮和计数都没有意义 */
 .pv.is-single .pv__nav,
 .pv.is-single .pv__count {
   display: none;
 }
 
-/* ── 底部信息 ───────────────────────────────────────── */
+/* ── 底部信息条 ─────────────────────────────────────── */
 
 .pv__info {
   flex: 0 0 auto;
-  max-width: min(760px, 88vw);
-  padding: 0.65rem 1.5rem;
+  align-self: center;
+  max-width: min(720px, 100%);
+  padding: 0.6rem 1.4rem;
   border-radius: 10px;
   background: var(--pv-chip);
   text-align: center;
   color: var(--pv-fg);
+}
+
+.pv__info:empty {
+  display: none;
 }
 
 .pv__count {
@@ -144,41 +162,48 @@
 }
 
 .pv__caption {
-  margin-top: 0.2rem;
-  font-size: 0.86rem;
+  margin-top: 0.15rem;
+  font-size: 0.85rem;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .pv__exif {
   margin-top: 0.25rem;
   font-size: 0.72rem;
+  line-height: 1.5;
   letter-spacing: 0.09em;
   color: var(--pv-dim);
+  overflow-wrap: anywhere;
 }
 
-.pv__info:empty {
+/* 空的计数/图注/参数行不占位 */
+.pv__count:empty,
+.pv__caption:empty,
+.pv__exif:empty {
   display: none;
 }
 
-/* ── 手机 ───────────────────────────────────────────── */
+/* ── 窄屏 ───────────────────────────────────────────── */
 
 @media (max-width: 760px) {
   .pv {
-    padding: 3.6rem 0.75rem 1rem;
+    /* 两侧不再给箭头留位置，箭头挪到底部 */
+    padding: 3.4rem 0.6rem 0.8rem;
+    gap: 0.6rem;
   }
 
   .pv__close {
-    top: 0.7rem;
-    right: 0.7rem;
+    top: 0.6rem;
+    right: 0.6rem;
     width: 40px;
     height: 40px;
     font-size: 23px;
   }
 
-  /* 手机上把箭头挪到底部，别挡住照片 */
   .pv__nav {
     top: auto;
-    bottom: 0.9rem;
+    bottom: 0.7rem;
     transform: none;
     width: 42px;
     height: 42px;
@@ -188,13 +213,15 @@
     transform: none;
   }
 
-  .pv__prev { left: 0.9rem; }
-  .pv__next { right: 0.9rem; }
+  .pv__prev { left: 0.7rem; }
+  .pv__next { right: 0.7rem; }
 
+  /* 给底部的箭头让出空间 */
   .pv__info {
-    margin-bottom: 3.2rem;
-    padding: 0.55rem 1rem;
+    margin-bottom: 3rem;
+    padding: 0.5rem 0.9rem;
   }
 
-  .pv__caption { font-size: 0.8rem; }
+  .pv__caption { font-size: 0.78rem; }
+  .pv__exif { font-size: 0.68rem; }
 }
