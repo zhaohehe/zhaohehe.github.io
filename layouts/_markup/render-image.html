@@ -1,33 +1,62 @@
 {{- /*
-  Markdown 图片渲染钩子：让正文里的每张照片都能点击放大。
+  Markdown 图片渲染钩子。三件事：
 
-  主题自带相册页的灯箱，样式是全局的（.lightbox 系列），
-  这里复用同一套类名，所以文章里的灯箱和相册页长得一模一样。
+  1. 让照片可以点击放大（灯箱与相册页共用同一套样式）
+  2. 按文件名自动查出拍摄参数，显示在图注下面
+  3. 支持排版尺寸指令，让图文错落有致
 
   用法还是最普通的 Markdown：
-    ![替代文字](图片地址)              → 只能放大，没有图注
-    ![替代文字](图片地址 "图注文字")    → 图片下方多一行图注
+
+      ![替代文字](图片地址)
+      ![替代文字](图片地址 "图注文字")
+      ![替代文字](图片地址 "[wide] 图注文字")
+
+  可选的大小指令（写在图注最前面，方括号里）：
+
+      （不写）   与正文同宽 —— 最稳妥的默认
+      [wide]    出血，比正文宽一些 —— 适合风景
+      [full]    占满整个屏幕宽度 —— 强调用，一张文章别超过两张
+      [small]   缩到 62% 居中 —— 适合特写、竖图
+      [half]    缩到 46% 居中 —— 更小的细节图
 
   注意：这里只输出行内元素（a / img / span），不包 figure。
   因为 Markdown 里独占一段的图片会被包进 <p>，里面放块级元素是非法 HTML。
-  图注用 span + display:block 实现换行效果。
 */ -}}
 
 {{- $dest := .Destination -}}
 {{- $alt := .PlainText -}}
-{{- $caption := .Title -}}
+{{- $title := .Title -}}
 
-{{- /* 解析出最终网址（中英文共用图片文件夹，这里会自动找到正确的路径）*/ -}}
+{{- /* 解析开头的尺寸指令 */ -}}
+{{- $size := "" -}}
+{{- $caption := $title -}}
+{{- range $s := slice "wide" "full" "small" "half" -}}
+  {{- if hasPrefix $title (printf "[%s]" $s) -}}
+    {{- $size = $s -}}
+    {{- $caption = replaceRE `^\[[a-z]+\]\s*` "" $title -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* 解析图片地址（中英文共用同一个图片文件夹，这里会自动找到正确的路径）*/ -}}
 {{- $src := partial "image-url.html" (dict "Page" .Page "Path" $dest) -}}
 
-{{- /*
-  灯箱指向「完整分辨率」的那一份：foo.webp → foo-full.webp。
-  上传脚本会给每张照片同时生成两份（正文用小的、灯箱用大的），
-  所以这个约定总是成立。万一某张没有大图，JS 会自动退回正文图，不会裂图。
-*/ -}}
+{{- /* 灯箱指向「完整分辨率」的那一份：foo.webp → foo-full.webp。
+       上传脚本会给每张照片同时生成两份，万一某张没有，JS 会自动退回正文图。 */ -}}
 {{- $full := $src -}}
 {{- if findRE `\.(webp|jpe?g)$` $src -}}
   {{- $full = replaceRE `\.(webp|jpe?g)$` "-full.$1" $src -}}
+{{- end -}}
+
+{{- /* 按文件名查拍摄参数。表由 scripts/exif.py 生成，上传照片时自动更新。 */ -}}
+{{- $exif := index (index site.Data "photo-exif" | default dict) (path.Base $src) -}}
+{{- $exifLine := "" -}}
+{{- with $exif -}}
+  {{- $bits := slice -}}
+  {{- with .aperture }}{{ $bits = $bits | append . }}{{ end -}}
+  {{- with .shutter }}{{ $bits = $bits | append . }}{{ end -}}
+  {{- with .iso }}{{ $bits = $bits | append (printf "ISO %s" .) }}{{ end -}}
+  {{- with .focal }}{{ $bits = $bits | append . }}{{ end -}}
+  {{- $exifLine = delimit $bits " · " -}}
 {{- end -}}
 
 {{- /* 一页只引入一次灯箱的样式和脚本 */ -}}
@@ -37,4 +66,4 @@
 <script src="{{ "js/post-lightbox.js" | relURL }}" defer></script>
 {{- end -}}
 
-<a class="post-img-link" href="{{ $full }}" data-fallback="{{ $src }}"{{ with $caption }} data-caption="{{ . }}"{{ end }}><img src="{{ $src }}" alt="{{ $alt }}" loading="lazy" decoding="async"></a>{{ with $caption }}<span class="post-img-caption">{{ . }}</span>{{ end }}
+<a class="post-img-link{{ with $size }} post-img-link--{{ . }}{{ end }}" href="{{ $full }}" data-fallback="{{ $src }}"{{ with $caption }} data-caption="{{ . }}"{{ end }}{{ with $exifLine }} data-exif="{{ . }}"{{ end }}><img src="{{ $src }}" alt="{{ $alt }}" loading="lazy" decoding="async"></a>{{ with $caption }}<span class="post-img-caption">{{ . }}</span>{{ end }}{{ with $exifLine }}<span class="post-img-exif">{{ . }}</span>{{ end }}

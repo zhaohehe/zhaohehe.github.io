@@ -30,6 +30,81 @@
   color: var(--color-text-secondary, #8a8a8a);
 }
 
+/* 拍摄参数：图注下面一行小字 */
+.post-content span.post-img-exif {
+  display: block;
+  margin-top: 0.3rem;
+  font-family: var(--font-sans, -apple-system, "Helvetica Neue", sans-serif);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  text-align: center;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted, #a3a3a3);
+}
+
+/* ── 排版尺寸指令，让图文错落有致 ───────────────────────────
+   写法是在图注前面加方括号，例如 ![说明](图片 "[wide] 傍晚的海") */
+
+/* 出血：比正文栏宽，左右对称溢出 */
+.post-content a.post-img-link--wide {
+  width: min(1100px, 92vw);
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 通栏：占满整个视口宽度 */
+.post-content a.post-img-link--full {
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 缩小并居中：适合特写、竖图、细节 */
+.post-content a.post-img-link--small {
+  max-width: 62%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.post-content a.post-img-link--half {
+  max-width: 46%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 图片缩小了，图注和参数也跟着缩，不然会显得悬空 */
+.post-content a.post-img-link--small + span.post-img-caption,
+.post-content a.post-img-link--small + span.post-img-exif {
+  max-width: 62%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.post-content a.post-img-link--half + span.post-img-caption,
+.post-content a.post-img-link--half + span.post-img-exif {
+  max-width: 46%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 手机上尺寸一律取消，不然会挤出屏幕 */
+@media (max-width: 700px) {
+  .post-content a.post-img-link--wide,
+  .post-content a.post-img-link--full {
+    width: 100%;
+    margin-left: 0;
+    transform: none;
+  }
+  .post-content a.post-img-link--small,
+  .post-content a.post-img-link--half,
+  .post-content a.post-img-link--small + span.post-img-caption,
+  .post-content a.post-img-link--small + span.post-img-exif,
+  .post-content a.post-img-link--half + span.post-img-caption,
+  .post-content a.post-img-link--half + span.post-img-exif {
+    max-width: 100%;
+  }
+}
+
 /* 大图可能有好几 MB，加载期间给个提示，免得看着像卡住了 */
 .lightbox.is-loading::before {
   content: "正在加载原图…";

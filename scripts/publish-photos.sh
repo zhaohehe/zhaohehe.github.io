@@ -77,6 +77,7 @@ long_edge() {
 human() { du -h "$1" | cut -f1 | tr -d ' '; }
 
 URLS=()
+EXIF_ARGS=()
 for src in "${INPUTS[@]}"; do
   [[ -f "$src" ]] || { echo "跳过（不是文件）: $src"; continue; }
 
@@ -121,11 +122,21 @@ for src in "${INPUTS[@]}"; do
   "$RCLONE" copyto "$full_webp" "$R2_REMOTE:$R2_BUCKET/$PREFIX/${stem}-full.webp" --s3-no-check-bucket
 
   URLS+=("${R2_PUBLIC_BASE%/}/$PREFIX/${stem}.webp")
+  # 顺手记下源文件，等会儿用它读取拍摄参数
+  EXIF_ARGS+=("${stem}=${src}")
   printf '✓ %-32s 原图 %7s → 正文 %7s + 大图 %7s\n' \
     "$name" "$(human "$base_jpg")" "$(human "$out_webp")" "$(human "$full_webp")"
 done
 
 echo
+# 把光圈、快门、ISO、焦距读出来存进 data/photo-exif.json，
+# 文章模板会按文件名自动显示，不用手动填。
+if [[ ${#EXIF_ARGS[@]} -gt 0 && -x "$ROOT_DIR/scripts/exif.py" ]]; then
+  echo "===== 读取拍摄参数 ====="
+  "$ROOT_DIR/scripts/exif.py" "${EXIF_ARGS[@]}"
+  echo
+fi
+
 if [[ ${#URLS[@]} -eq 0 ]]; then
   echo "没有成功处理任何图片。"
   exit 1

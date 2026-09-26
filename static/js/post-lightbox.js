@@ -62,6 +62,7 @@
     var link = links[index];
     var img = link.querySelector('img');
     var caption = link.getAttribute('data-caption') || '';
+    var exif = link.getAttribute('data-exif') || '';
     var counter = box.querySelector('.lightbox-counter');
 
     var big = box.querySelector('img');
@@ -77,6 +78,9 @@
     }
     if (caption) {
       parts.push(caption);
+    }
+    if (exif) {
+      parts.push(exif);
     }
     counter.textContent = parts.join('   ·   ');
 
