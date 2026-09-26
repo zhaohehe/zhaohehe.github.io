@@ -27,7 +27,7 @@ Forty more minutes of driving, and by the time we reached Hamdeok the sun had be
 
 The sea here is nothing like Woljeongri's — much shallower. You can walk a long way out and still be only waist-deep, with a pale shelf of sand lying across the middle like a step laid into the water. Some people simply sit on the shore and watch, and stay sitting for a long time.
 
-![Hamdeok beach, with a red-and-white beacon at the end of the breakwater](https://pub-8d13831146c847848b9e0b65ceea570b.r2.dev/2026/09/jeju-02.webp "[half] Hamdeok · the red beacon at the end of the breakwater")
+![Hamdeok beach, with a red-and-white beacon at the end of the breakwater](https://pub-8d13831146c847848b9e0b65ceea570b.r2.dev/2026/09/jeju-02.webp "[left] Hamdeok · the red beacon at the end of the breakwater")
 
 Along the shore runs a long promenade: a whole row of palm trees, orange-and-white conical tents, stall after stall. An LED sign at the corner rolled through 횡단보도, 어린이 — crosswalk, children — and the street sign read 함덕13길. Down by the sand a banner announcing this year's summer season still hung on, lifting and falling in the wind.
 
@@ -37,11 +37,11 @@ Along the shore runs a long promenade: a whole row of palm trees, orange-and-whi
 
 As the sun moved west, drums started up from the direction of the stage.
 
+![An open-air performance by the sea, the band on stage](https://pub-8d13831146c847848b9e0b65ceea570b.r2.dev/2026/09/jeju-04.webp "[right] Hamdeok · the evening show by the water")
+
 It was a band. Bass player on the left, a drum kit in the middle — a Yamaha — and on the right a singer in a baseball cap with a white electric guitar. Someone in a bucket hat paced about the stage adjusting equipment.
 
 No seating plan, no one keeping order. People passing through stopped for a moment and moved on; others sat down on the steps and stayed. The sea breeze scattered the sound a little, but the drums came through clearly, beat by beat. Behind the stage stood a white box truck with equipment cases marked FINE ART stacked beside it.
-
-![An open-air performance by the sea, the band on stage](https://pub-8d13831146c847848b9e0b65ceea570b.r2.dev/2026/09/jeju-04.webp "Hamdeok · the evening show by the water")
 
 ## On the way back
 

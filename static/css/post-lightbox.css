@@ -1,5 +1,14 @@
-/* 正文图片的「点击放大」。
-   灯箱本体的样式复用主题全局的 .lightbox 系列，这里只补图片链接和图注。 */
+/* 正文照片：点击放大、图注、拍摄参数、以及排版指令。
+   灯箱本体的样式复用主题全局的 .lightbox 系列，这里不重复定义。 */
+
+/* ── 基本结构 ─────────────────────────────────────────────
+   渲染钩子会给每张图套一层 <span class="post-figure">。
+   span 是行内标签，套在 Markdown 生成的 <p> 里完全合法；
+   再用 display:block / float 做排版，既能整体控制又不破坏 HTML。 */
+
+.post-content span.post-figure {
+  display: block;
+}
 
 .post-content a.post-img-link {
   display: block;
@@ -42,67 +51,58 @@
   color: var(--color-text-muted, #a3a3a3);
 }
 
-/* ── 排版尺寸指令，让图文错落有致 ───────────────────────────
-   写法是在图注前面加方括号，例如 ![说明](图片 "[wide] 傍晚的海") */
+/* ── 排版指令 ─────────────────────────────────────────────
+   写法：在图注最前面加方括号，例如 ![说明](图片 "[left] 傍晚的海") */
+
+/* 图片靠左，紧随其后的文字绕排在右边 */
+.post-content span.post-figure--left {
+  float: left;
+  width: 52%;
+  margin: 0.4rem 2rem 1.2rem 0;
+}
+
+/* 图片靠右，紧随其后的文字绕排在左边 */
+.post-content span.post-figure--right {
+  float: right;
+  width: 52%;
+  margin: 0.4rem 0 1.2rem 2rem;
+}
 
 /* 出血：比正文栏宽，左右对称溢出 */
-.post-content a.post-img-link--wide {
-  width: min(1100px, 92vw);
+.post-content span.post-figure--wide {
+  clear: both;
+  width: min(1180px, 94vw);
   margin-left: 50%;
   transform: translateX(-50%);
 }
 
-/* 通栏：占满整个视口宽度 */
-.post-content a.post-img-link--full {
+/* 通栏：占满整个屏幕宽度 */
+.post-content span.post-figure--full {
+  clear: both;
   width: 100vw;
   margin-left: 50%;
   transform: translateX(-50%);
 }
 
-/* 缩小并居中：适合特写、竖图、细节 */
-.post-content a.post-img-link--small {
-  max-width: 62%;
+/* 缩小并居中。别设太小，否则照片的细节就白拍了 */
+.post-content span.post-figure--small {
+  clear: both;
+  width: 78%;
   margin-left: auto;
   margin-right: auto;
 }
 
-.post-content a.post-img-link--half {
-  max-width: 46%;
+.post-content span.post-figure--half {
+  clear: both;
+  width: 58%;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* 图片缩小了，图注和参数也跟着缩，不然会显得悬空 */
-.post-content a.post-img-link--small + span.post-img-caption,
-.post-content a.post-img-link--small + span.post-img-exif {
-  max-width: 62%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.post-content a.post-img-link--half + span.post-img-caption,
-.post-content a.post-img-link--half + span.post-img-exif {
-  max-width: 46%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* 手机上尺寸一律取消，不然会挤出屏幕 */
-@media (max-width: 700px) {
-  .post-content a.post-img-link--wide,
-  .post-content a.post-img-link--full {
-    width: 100%;
-    margin-left: 0;
-    transform: none;
-  }
-  .post-content a.post-img-link--small,
-  .post-content a.post-img-link--half,
-  .post-content a.post-img-link--small + span.post-img-caption,
-  .post-content a.post-img-link--small + span.post-img-exif,
-  .post-content a.post-img-link--half + span.post-img-caption,
-  .post-content a.post-img-link--half + span.post-img-exif {
-    max-width: 100%;
-  }
+/* 浮动图片之后的标题要清一下，否则会挤在图片旁边 */
+.post-content h2,
+.post-content h3 {
+  clear: both;
 }
 
 /* 大图可能有好几 MB，加载期间给个提示，免得看着像卡住了 */
@@ -114,4 +114,27 @@
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   color: rgba(255, 255, 255, 0.45);
+}
+
+/* ── 手机 ─────────────────────────────────────────────────
+   小屏幕上所有排版指令一律失效，全部满宽，不然会挤成一团 */
+@media (max-width: 760px) {
+  .post-content span.post-figure--left,
+  .post-content span.post-figure--right {
+    float: none;
+    width: 100%;
+    margin: 0 0 0.5rem;
+  }
+
+  .post-content span.post-figure--wide,
+  .post-content span.post-figure--full {
+    width: 100%;
+    margin-left: 0;
+    transform: none;
+  }
+
+  .post-content span.post-figure--small,
+  .post-content span.post-figure--half {
+    width: 100%;
+  }
 }

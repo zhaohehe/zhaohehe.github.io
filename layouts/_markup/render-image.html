@@ -11,16 +11,19 @@
       ![替代文字](图片地址 "图注文字")
       ![替代文字](图片地址 "[wide] 图注文字")
 
-  可选的大小指令（写在图注最前面，方括号里）：
+  可选的排版指令（写在图注最前面，方括号里）：
 
       （不写）   与正文同宽 —— 最稳妥的默认
-      [wide]    出血，比正文宽一些 —— 适合风景
-      [full]    占满整个屏幕宽度 —— 强调用，一张文章别超过两张
-      [small]   缩到 62% 居中 —— 适合特写、竖图
-      [half]    缩到 46% 居中 —— 更小的细节图
+      [left]    图片靠左，紧跟其后的文字绕排在右边
+      [right]   图片靠右，紧随其后的文字绕排在左边
+      [wide]    出血，比正文栏宽 —— 适合风景
+      [full]    占满整个屏幕宽度 —— 强调用，一篇别超过两张
+      [small]   缩到 78% 居中
+      [half]    缩到 58% 居中
 
-  注意：这里只输出行内元素（a / img / span），不包 figure。
-  因为 Markdown 里独占一段的图片会被包进 <p>，里面放块级元素是非法 HTML。
+  注意：图片在 Markdown 里独占一段，会被包进 <p>；<p> 里面不能放块级元素。
+  所以这里用 <span> 当容器（span 是行内标签，里面套 span/a/img 完全合法），
+  再用 CSS 给它 display:block / float —— 这样既能整体排版，又不破坏 HTML 结构。
 */ -}}
 
 {{- $dest := .Destination -}}
@@ -30,7 +33,7 @@
 {{- /* 解析开头的尺寸指令 */ -}}
 {{- $size := "" -}}
 {{- $caption := $title -}}
-{{- range $s := slice "wide" "full" "small" "half" -}}
+{{- range $s := slice "left" "right" "wide" "full" "small" "half" -}}
   {{- if hasPrefix $title (printf "[%s]" $s) -}}
     {{- $size = $s -}}
     {{- $caption = replaceRE `^\[[a-z]+\]\s*` "" $title -}}
@@ -66,4 +69,4 @@
 <script src="{{ "js/post-lightbox.js" | relURL }}" defer></script>
 {{- end -}}
 
-<a class="post-img-link{{ with $size }} post-img-link--{{ . }}{{ end }}" href="{{ $full }}" data-fallback="{{ $src }}"{{ with $caption }} data-caption="{{ . }}"{{ end }}{{ with $exifLine }} data-exif="{{ . }}"{{ end }}><img src="{{ $src }}" alt="{{ $alt }}" loading="lazy" decoding="async"></a>{{ with $caption }}<span class="post-img-caption">{{ . }}</span>{{ end }}{{ with $exifLine }}<span class="post-img-exif">{{ . }}</span>{{ end }}
+<span class="post-figure{{ with $size }} post-figure--{{ . }}{{ end }}"><a class="post-img-link" href="{{ $full }}" data-fallback="{{ $src }}"{{ with $caption }} data-caption="{{ . }}"{{ end }}{{ with $exifLine }} data-exif="{{ . }}"{{ end }}><img src="{{ $src }}" alt="{{ $alt }}" loading="lazy" decoding="async"></a>{{ with $caption }}<span class="post-img-caption">{{ . }}</span>{{ end }}{{ with $exifLine }}<span class="post-img-exif">{{ . }}</span>{{ end }}</span>
